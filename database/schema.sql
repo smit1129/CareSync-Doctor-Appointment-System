@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS appointments (
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     status VARCHAR(30) NOT NULL DEFAULT 'Confirmed' 
-        CHECK (status IN ('Requested', 'Confirmed', 'Rejected', 'Cancelled', 'Rescheduled', 'Completed')),
+        CHECK (status IN ('Requested', 'Payment Pending', 'Confirmed', 'Rejected', 'Cancelled', 'Rescheduled', 'Completed')),
     reason TEXT,
     cancellation_reason TEXT,
     rescheduled_from_id VARCHAR(36) REFERENCES appointments(id) ON DELETE SET NULL,

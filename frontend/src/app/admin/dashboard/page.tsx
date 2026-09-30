@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { adminAPI, AdminStats, doctorsAPI, DoctorInfo, PatientInfo } from "@/lib/api";
+import { adminAPI, AdminStats, doctorsAPI, DoctorInfo, PatientInfo, DailyReport, MonthlyReport } from "@/lib/api";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function AdminDashboard() {
   const [patients, setPatients] = useState<PatientInfo[]>([]);
   const [loading, setLoading] = useState(true);
   
-  const [tab, setTab] = useState<"overview" | "doctors" | "patients">("overview");
+  const [tab, setTab] = useState<"overview" | "doctors" | "patients" | "reports">("overview");
 
   // New doctor state
   const [showAddDoctor, setShowAddDoctor] = useState(false);
@@ -30,6 +30,16 @@ export default function AdminDashboard() {
   });
   const [addDocLoading, setAddDocLoading] = useState(false);
   const [msg, setMsg] = useState("");
+
+  // Reports state
+  const [dailyReport, setDailyReport] = useState<DailyReport | null>(null);
+  const [monthlyReport, setMonthlyReport] = useState<MonthlyReport | null>(null);
+  const [reportLoading, setReportLoading] = useState(false);
+  
+  const today = new Date();
+  const [reportDate, setReportDate] = useState(today.toISOString().split("T")[0]);
+  const [reportMonth, setReportMonth] = useState(today.getMonth() + 1);
+  const [reportYear, setReportYear] = useState(today.getFullYear());
 
   const fetchData = useCallback(async () => {
     if (!token) return;
@@ -49,15 +59,36 @@ export default function AdminDashboard() {
     setLoading(false);
   }, [token]);
 
+  const fetchReports = useCallback(async () => {
+    if (!token) return;
+    setReportLoading(true);
+    try {
+      const [daily, monthly] = await Promise.all([
+        adminAPI.dailyReport(token, reportDate),
+        adminAPI.monthlyReport(token, reportMonth, reportYear),
+      ]);
+      setDailyReport(daily);
+      setMonthlyReport(monthly);
+    } catch {
+      // ignore
+    }
+    setReportLoading(false);
+  }, [token, reportDate, reportMonth, reportYear]);
+
   useEffect(() => {
     if (authLoading) return;
     if (!user || !isAdmin) {
       router.push("/auth/login");
       return;
     }
-    const load = async () => { await fetchData(); };
-    load();
+    fetchData();
   }, [user, authLoading, isAdmin, router, fetchData]);
+
+  useEffect(() => {
+    if (tab === "reports") {
+      fetchReports();
+    }
+  }, [tab, reportDate, reportMonth, reportYear, fetchReports]);
 
   const handleAddDoctor = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,10 +144,10 @@ export default function AdminDashboard() {
         )}
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
-          {(["overview", "doctors", "patients"] as const).map(t => (
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+          {(["overview", "doctors", "patients", "reports"] as const).map(t => (
             <button key={t} onClick={() => setTab(t)}
-              className={`px-5 py-2.5 rounded-lg text-sm font-medium capitalize transition-all ${tab === t ? "bg-teal-600 text-white shadow" : "bg-white text-gray-600 border border-gray-200 hover:border-teal-300"}`}>
+              className={`px-5 py-2.5 rounded-lg text-sm font-medium capitalize transition-all whitespace-nowrap ${tab === t ? "bg-teal-600 text-white shadow" : "bg-white text-gray-600 border border-gray-200 hover:border-teal-300"}`}>
               {t}
             </button>
           ))}
@@ -216,6 +247,104 @@ export default function AdminDashboard() {
                 )}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {tab === "reports" && (
+          <div className="space-y-8">
+            <div className="flex flex-col md:flex-row gap-6">
+              
+              {/* Daily Report */}
+              <div className="flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-lg font-bold text-gray-900">Daily Report</h3>
+                  <input type="date" value={reportDate} onChange={(e) => setReportDate(e.target.value)}
+                    className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-700 outline-none focus:ring-2 focus:ring-teal-500" />
+                </div>
+                {reportLoading ? (
+                  <div className="skeleton h-40 rounded-xl"></div>
+                ) : dailyReport ? (
+                  <div>
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                      <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 text-center">
+                        <div className="text-sm text-gray-500">Total Appointments</div>
+                        <div className="text-2xl font-bold text-gray-900">{dailyReport.total_appointments}</div>
+                      </div>
+                      <div className="bg-amber-50 p-4 rounded-xl border border-amber-100 text-center">
+                        <div className="text-sm text-amber-700">Total Revenue</div>
+                        <div className="text-2xl font-bold text-amber-900">₹{dailyReport.total_revenue}</div>
+                      </div>
+                    </div>
+                    
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-gray-700 mb-3">Appointments Breakup</h4>
+                      <div className="flex gap-2 text-sm text-center">
+                        <div className="flex-1 bg-green-50 text-green-700 py-2 rounded-lg">Confirmed: {dailyReport.confirmed_count}</div>
+                        <div className="flex-1 bg-blue-50 text-blue-700 py-2 rounded-lg">Completed: {dailyReport.completed_count}</div>
+                        <div className="flex-1 bg-red-50 text-red-700 py-2 rounded-lg">Cancelled: {dailyReport.cancelled_count}</div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-sm">No report available for this date.</p>
+                )}
+              </div>
+
+              {/* Monthly Report */}
+              <div className="flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-lg font-bold text-gray-900">Monthly Report</h3>
+                  <div className="flex gap-2">
+                    <select value={reportMonth} onChange={(e) => setReportMonth(Number(e.target.value))}
+                      className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-700 outline-none focus:ring-2 focus:ring-teal-500">
+                      {Array.from({length: 12}, (_, i) => i + 1).map(m => (
+                        <option key={m} value={m}>{new Date(2000, m - 1).toLocaleString('default', { month: 'short' })}</option>
+                      ))}
+                    </select>
+                    <input type="number" value={reportYear} onChange={(e) => setReportYear(Number(e.target.value))}
+                      className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-700 w-24 outline-none focus:ring-2 focus:ring-teal-500" min="2020" max="2035" />
+                  </div>
+                </div>
+                {reportLoading ? (
+                  <div className="skeleton h-40 rounded-xl"></div>
+                ) : monthlyReport ? (
+                  <div>
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                      <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 text-center">
+                        <div className="text-sm text-gray-500">Total Appointments ({monthlyReport.month_name})</div>
+                        <div className="text-2xl font-bold text-gray-900">{monthlyReport.total_appointments}</div>
+                      </div>
+                      <div className="bg-amber-50 p-4 rounded-xl border border-amber-100 text-center">
+                        <div className="text-sm text-amber-700">Monthly Revenue</div>
+                        <div className="text-2xl font-bold text-amber-900">₹{monthlyReport.total_revenue}</div>
+                      </div>
+                    </div>
+
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-gray-700 mb-3">Top Doctors</h4>
+                      {monthlyReport.top_doctors.length > 0 ? (
+                        <ul className="space-y-2">
+                          {monthlyReport.top_doctors.map(d => (
+                            <li key={d.doctor_id} className="flex justify-between items-center text-sm bg-gray-50 px-3 py-2 rounded-lg">
+                              <div>
+                                <span className="font-medium text-gray-800">{d.doctor_name}</span>
+                                <span className="text-gray-500 ml-2">({d.specialization})</span>
+                              </div>
+                              <span className="bg-teal-100 text-teal-800 px-2 py-0.5 rounded font-medium">{d.appointment_count} apts</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-500 text-sm">No doctor statistics for this month.</p>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-sm">No report available for this month.</p>
+                )}
+              </div>
+
+            </div>
           </div>
         )}
       </div>

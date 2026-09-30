@@ -65,12 +65,14 @@ class PaymentService:
         )
         db.add(payment)
 
+        appointment.status = "Confirmed"
+
         # Notify patient of successful transaction & receipt
         db.add(Notification(
             id=str(uuid.uuid4()),
             user_id=appointment.patient.user_id,
             title="Payment Successful",
-            message=f"Payment of ₹{amount:.2f} received for appointment with Dr. {appointment.doctor.user.full_name}. Receipt: {receipt_number}",
+            message=f"Payment of ₹{amount:.2f} received. Your appointment with Dr. {appointment.doctor.user.full_name} is confirmed. Receipt: {receipt_number}",
             type="confirmation"
         ))
 

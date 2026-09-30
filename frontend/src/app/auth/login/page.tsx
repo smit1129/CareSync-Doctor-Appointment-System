@@ -87,15 +87,15 @@ export default function LoginPage() {
           <div className="mt-8 pt-6 border-t border-gray-100">
             <p className="text-xs text-gray-400 text-center mb-3">Quick Demo Access</p>
             <div className="grid grid-cols-3 gap-2">
-              <button onClick={() => quickLogin("john.doe@gmail.com", "Patient@12345")}
+              <button onClick={() => quickLogin("smit.gamit@demo.caresync.local", "Patient@12345")}
                 className="py-2 px-3 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-lg hover:bg-emerald-100 transition-colors">
                 Patient
               </button>
-              <button onClick={() => quickLogin("sarah.jenkins@hospital.com", "Doctor@12345")}
+              <button onClick={() => quickLogin("aarav.mehta@demo.caresync.local", "Doctor@12345")}
                 className="py-2 px-3 bg-blue-50 text-blue-700 text-xs font-medium rounded-lg hover:bg-blue-100 transition-colors">
                 Doctor
               </button>
-              <button onClick={() => quickLogin("admin@hospital.com", "Admin@12345")}
+              <button onClick={() => quickLogin("admin@demo.caresync.local", "Admin@12345")}
                 className="py-2 px-3 bg-purple-50 text-purple-700 text-xs font-medium rounded-lg hover:bg-purple-100 transition-colors">
                 Admin
               </button>

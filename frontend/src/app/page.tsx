@@ -272,9 +272,9 @@ export default function HomePage() {
           <p className="text-center text-gray-500 mb-8">Use these accounts to explore the system</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {[
-              { role: "Patient", desc: "Explore patient appointment features", email: "john.doe@gmail.com", pass: "Patient@12345", color: "from-emerald-500 to-teal-600", icon: "👤" },
-              { role: "Doctor", desc: "Manage appointments and availability", email: "sarah.jenkins@hospital.com", pass: "Doctor@12345", color: "from-blue-500 to-indigo-600", icon: "🩺" },
-              { role: "Admin", desc: "Manage the complete system", email: "admin@hospital.com", pass: "Admin@12345", color: "from-purple-500 to-pink-600", icon: "⚙️" },
+              { role: "Patient", desc: "Explore patient appointment features", email: "smit.gamit@demo.caresync.local", pass: "Patient@12345", color: "from-emerald-500 to-teal-600", icon: "👤" },
+              { role: "Doctor", desc: "Manage appointments and availability", email: "aarav.mehta@demo.caresync.local", pass: "Doctor@12345", color: "from-blue-500 to-indigo-600", icon: "🩺" },
+              { role: "Admin", desc: "Manage the complete system", email: "admin@demo.caresync.local", pass: "Admin@12345", color: "from-purple-500 to-pink-600", icon: "⚙️" },
             ].map((demo) => (
               <div key={demo.role} className={`bg-gradient-to-br ${demo.color} rounded-2xl p-6 text-white shadow-lg flex flex-col`}>
                 <div className="text-4xl mb-4">{demo.icon}</div>

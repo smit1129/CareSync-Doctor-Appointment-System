@@ -194,12 +194,12 @@ def doctor_appointment_action(
 
     action = req.action.strip().lower()
     if action == "accept":
-        appointment.status = "Confirmed"
+        appointment.status = "Payment Pending"
         db.add(Notification(
             id=str(uuid.uuid4()),
             user_id=appointment.patient.user_id,
-            title="Appointment Confirmed by Doctor",
-            message=f"Dr. {appointment.doctor.user.full_name} has accepted and confirmed your appointment on {appointment.appointment_date}.",
+            title="Appointment Request Accepted",
+            message=f"Your appointment request with Dr. {appointment.doctor.user.full_name} has been accepted. Please complete payment to confirm your appointment.",
             type="status_change"
         ))
     elif action == "reject":

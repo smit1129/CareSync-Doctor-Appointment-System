@@ -100,13 +100,7 @@ export default function DoctorDetailPage() {
         appointment_date: selectedDate,
         start_time: selectedSlot,
         reason: reason || "General Consultation",
-      });
-      // Process payment
-      setBookingStatus("paying");
-      await paymentsAPI.process(token, {
-        appointment_id: apt.id,
-        amount: doctor?.consultation_fee || 500,
-        payment_mode: paymentMode,
+        initial_status: "Requested",
       });
       setBookingStatus("success");
     } catch (err: unknown) {
@@ -186,8 +180,8 @@ export default function DoctorDetailPage() {
               {bookingStatus === "success" ? (
                 <div className="text-center py-8">
                   <div className="text-5xl mb-4">🎉</div>
-                  <h3 className="text-xl font-bold text-green-700 mb-2">Appointment Booked Successfully!</h3>
-                  <p className="text-gray-500 mb-6">Payment processed. You will receive a confirmation notification.</p>
+                  <h3 className="text-xl font-bold text-green-700 mb-2">Appointment Requested Successfully!</h3>
+                  <p className="text-gray-500 mb-6">Your request has been sent to the doctor. Once accepted, you can complete the payment.</p>
                   <button onClick={() => router.push("/patient/dashboard")}
                     className="px-6 py-3 bg-teal-600 text-white font-semibold rounded-xl hover:bg-teal-700 transition-colors">
                     View My Appointments
@@ -241,28 +235,9 @@ export default function DoctorDetailPage() {
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-800 focus:ring-2 focus:ring-teal-500 outline-none" />
                   </div>
 
-                  {/* Payment Mode */}
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-3">Payment Method</label>
-                    <div className="flex gap-3">
-                      {[
-                        { key: "card", label: "💳 Card", },
-                        { key: "upi", label: "📱 UPI", },
-                        { key: "netbanking", label: "🏦 Netbanking", },
-                      ].map(m => (
-                        <button key={m.key} onClick={() => setPaymentMode(m.key)}
-                          className={`flex-1 py-3 rounded-xl text-sm font-medium transition-all ${paymentMode === m.key ? "bg-teal-50 border-2 border-teal-500 text-teal-700" : "bg-gray-50 border border-gray-200 text-gray-600 hover:border-teal-300"}`}>
-                          {m.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {errorMsg && <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">{errorMsg}</div>}
-
-                  <button onClick={handleBook} disabled={!selectedSlot || !selectedDate || bookingStatus === "booking" || bookingStatus === "paying"}
+                  <button onClick={handleBook} disabled={!selectedSlot || !selectedDate || bookingStatus === "booking"}
                     className="w-full py-3.5 bg-gradient-to-r from-teal-600 to-cyan-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                    {bookingStatus === "booking" ? "Booking..." : bookingStatus === "paying" ? "Processing Payment..." : `Book & Pay ₹${doctor.consultation_fee}`}
+                    {bookingStatus === "booking" ? "Requesting..." : `Request Appointment`}
                   </button>
                 </>
               )}

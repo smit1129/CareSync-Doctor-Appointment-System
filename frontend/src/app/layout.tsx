@@ -59,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </div>
               </div>
               <div className="border-t border-gray-800 mt-8 pt-6 text-center text-sm">
-                © 2026 CareSync — Connect. Book. Care. | Developed by Smit Gamit
+                © 2026 CareSync — Connect. Book. Care. | Developed by Smit & Rohit
               </div>
             </div>
           </footer>

@@ -8,27 +8,27 @@
 
 -- 1. USERS
 INSERT INTO users (id, email, password_hash, full_name, role, phone_number, is_active) VALUES
-('usr-admin-01', 'admin@hospital.com', '$2b$12$L8gWlqH9c0JomBvy3vGq9.T6oKzLw89B9d6nI4C2VbJg6n5m1N0qe', 'Hospital Admin', 'admin', '+1-555-0100', TRUE),
-('usr-doc-01', 'sarah.jenkins@hospital.com', '$2b$12$L8gWlqH9c0JomBvy3vGq9.T6oKzLw89B9d6nI4C2VbJg6n5m1N0qe', 'Dr. Sarah Jenkins', 'doctor', '+1-555-0101', TRUE),
-('usr-doc-02', 'marcus.vance@hospital.com', '$2b$12$L8gWlqH9c0JomBvy3vGq9.T6oKzLw89B9d6nI4C2VbJg6n5m1N0qe', 'Dr. Marcus Vance', 'doctor', '+1-555-0102', TRUE),
-('usr-doc-03', 'priya.sharma@hospital.com', '$2b$12$L8gWlqH9c0JomBvy3vGq9.T6oKzLw89B9d6nI4C2VbJg6n5m1N0qe', 'Dr. Priya Sharma', 'doctor', '+1-555-0103', TRUE),
-('usr-doc-04', 'alex.mercer@hospital.com', '$2b$12$L8gWlqH9c0JomBvy3vGq9.T6oKzLw89B9d6nI4C2VbJg6n5m1N0qe', 'Dr. Alex Mercer', 'doctor', '+1-555-0104', TRUE),
-('usr-pat-01', 'john.doe@gmail.com', '$2b$12$L8gWlqH9c0JomBvy3vGq9.T6oKzLw89B9d6nI4C2VbJg6n5m1N0qe', 'John Doe', 'patient', '+1-555-0150', TRUE),
-('usr-pat-02', 'alice.smith@gmail.com', '$2b$12$L8gWlqH9c0JomBvy3vGq9.T6oKzLw89B9d6nI4C2VbJg6n5m1N0qe', 'Alice Smith', 'patient', '+1-555-0151', TRUE)
+('usr-admin-01', 'admin@demo.caresync.local', '$2b$12$xvkM6IEMb62tKb3mK/nuROZqG2AUN23PwZ6mkp21PvATGI5wIfW3W', 'Hospital Admin', 'admin', '+91 90000 00001', TRUE),
+('usr-doc-01', 'aarav.mehta@demo.caresync.local', '$2b$12$3orBJlJaoLsYnDqxaKTiNuLf/Ka8YxV9AQ6u6UePW7Ovwur6sQEuy', 'Dr. Aarav Mehta', 'doctor', '+91 90000 10001', TRUE),
+('usr-doc-02', 'ananya.patel@demo.caresync.local', '$2b$12$3orBJlJaoLsYnDqxaKTiNuLf/Ka8YxV9AQ6u6UePW7Ovwur6sQEuy', 'Dr. Ananya Patel', 'doctor', '+91 90000 10002', TRUE),
+('usr-doc-03', 'rohan.shah@demo.caresync.local', '$2b$12$3orBJlJaoLsYnDqxaKTiNuLf/Ka8YxV9AQ6u6UePW7Ovwur6sQEuy', 'Dr. Rohan Shah', 'doctor', '+91 90000 10003', TRUE),
+('usr-doc-04', 'neha.desai@demo.caresync.local', '$2b$12$3orBJlJaoLsYnDqxaKTiNuLf/Ka8YxV9AQ6u6UePW7Ovwur6sQEuy', 'Dr. Neha Desai', 'doctor', '+91 90000 10004', TRUE),
+('usr-pat-01', 'smit.gamit@demo.caresync.local', '$2b$12$OdpPKdaRxyURiFH4TOc3POkjqCZQ5RuY4cSHfV2VrLimpVqrP.BqC', 'Smit Gamit', 'patient', '+91 90000 20001', TRUE),
+('usr-pat-02', 'rahul.patel@demo.caresync.local', '$2b$12$OdpPKdaRxyURiFH4TOc3POkjqCZQ5RuY4cSHfV2VrLimpVqrP.BqC', 'Rahul Patel', 'patient', '+91 90000 20002', TRUE)
 ON CONFLICT (id) DO NOTHING;
 
 -- 2. DOCTORS
 INSERT INTO doctors (id, user_id, specialization, qualification, experience_years, clinic_address, consultation_fee, bio, rating_avg, rating_count) VALUES
-('doc-01', 'usr-doc-01', 'Cardiologist', 'MD, FACC, Harvard Medical', 14, 'Heart & Vascular Suite 402, Metro Health Center', 1200.00, 'Board-certified cardiologist specializing in non-invasive cardiovascular treatments, preventative care, and heart failure management.', 4.9, 28),
-('doc-02', 'usr-doc-02', 'Dermatologist', 'MD, American Board of Dermatology', 10, 'Skin & Wellness Center, Level 2', 900.00, 'Specialist in clinical and cosmetic dermatology, acne therapies, eczema, and skin cancer screenings.', 4.8, 19),
-('doc-03', 'usr-doc-03', 'Pediatrician', 'MBBS, MD Pediatrics, Johns Hopkins', 8, 'Childrens Care Wing, Room 108', 800.00, 'Compassionate pediatric specialist dedicated to child health, vaccinations, growth monitoring, and developmental wellbeing.', 5.0, 35),
-('doc-04', 'usr-doc-04', 'Neurologist', 'MD, PhD Neuroscience, Oxford', 16, 'Brain & Nerve Institute, 6th Floor', 1500.00, 'Leading neurologist treating migraines, neurological disorders, cognitive disorders, and stroke rehabilitation.', 4.9, 22)
+('doc-01', 'usr-doc-01', 'Cardiologist', 'MBBS, MD, DM', 14, 'Heart & Vascular Institute, SG Highway, Ahmedabad', 1200.00, 'Board-certified cardiologist specializing in non-invasive cardiovascular treatments, preventative care, and heart failure management.', 4.9, 28),
+('doc-02', 'usr-doc-02', 'Dermatologist', 'MBBS, MD', 8, 'SkinCare Clinic, Vile Parle, Mumbai', 800.00, 'Expert in medical and cosmetic dermatology, treating severe acne, eczema, and providing advanced aesthetic procedures.', 4.7, 45),
+('doc-03', 'usr-doc-03', 'Pediatrician', 'MBBS, MD, DNB', 11, 'Children''s Health Center, Kothrud, Pune', 700.00, 'Dedicated pediatrician with over a decade of experience in child growth and development, immunizations, and acute illness management.', 4.8, 62),
+('doc-04', 'usr-doc-04', 'Neurologist', 'MBBS, MD, DM', 16, 'Neuro Spine Hospital, Whitefield, Bengaluru', 1500.00, 'Senior neurologist specializing in stroke management, epilepsy disorders, and chronic migraine therapies.', 5.0, 15)
 ON CONFLICT (id) DO NOTHING;
 
 -- 3. PATIENTS
 INSERT INTO patients (id, user_id, contact_no, date_of_birth, gender, blood_group, medical_history) VALUES
-('pat-01', 'usr-pat-01', '+1-555-0150', '1988-04-12', 'Male', 'O+', 'Mild hypertension, no known drug allergies.'),
-('pat-02', 'usr-pat-02', '+1-555-0151', '1993-09-25', 'Female', 'A+', 'History of asthma, seasonal allergies.')
+('pat-01', 'usr-pat-01', '+91 90000 20001', '1988-04-12', 'Male', 'O+', 'Mild hypertension, no known drug allergies.'),
+('pat-02', 'usr-pat-02', '+91 90000 20002', '1993-09-25', 'Female', 'A+', 'History of asthma, seasonal allergies.')
 ON CONFLICT (id) DO NOTHING;
 
 -- 4. DOCTOR AVAILABILITIES (Monday to Friday, 09:00 - 17:00)
@@ -49,9 +49,9 @@ ON CONFLICT (id) DO NOTHING;
 
 -- 5. SAMPLE APPOINTMENTS
 INSERT INTO appointments (id, patient_id, doctor_id, appointment_date, start_time, end_time, status, reason) VALUES
-('apt-01', 'pat-01', 'doc-01', '2026-09-20', '10:00:00', '10:30:00', 'Confirmed', 'Routine cardiovascular follow-up'),
-('apt-02', 'pat-02', 'doc-02', '2026-09-22', '11:00:00', '11:30:00', 'Confirmed', 'Annual skin checkup and rash consultation'),
-('apt-03', 'pat-01', 'doc-01', '2026-08-15', '09:30:00', '10:00:00', 'Completed', 'Initial consultation for elevated resting BP')
+('apt-01', 'pat-01', 'doc-01', '2026-11-10', '10:00:00', '10:30:00', 'Confirmed', 'Routine cardiovascular follow-up'),
+('apt-02', 'pat-02', 'doc-02', '2026-11-12', '11:00:00', '11:30:00', 'Confirmed', 'Annual skin checkup and rash consultation'),
+('apt-03', 'pat-01', 'doc-01', '2026-10-01', '09:30:00', '10:00:00', 'Completed', 'Initial consultation for elevated resting BP')
 ON CONFLICT (id) DO NOTHING;
 
 -- 6. SAMPLE PAYMENTS

@@ -11,6 +11,7 @@ const STATUS_BADGES: Record<string, string> = {
   Cancelled: "badge-cancelled",
   Rejected: "badge-rejected",
   Requested: "badge-requested",
+  "Payment Pending": "badge-requested",
   Rescheduled: "badge-rescheduled",
 };
 
@@ -76,7 +77,7 @@ export default function DoctorDashboard() {
   };
 
   const today = new Date().toISOString().split("T")[0];
-  const upcoming = appointments.filter(a => ["Confirmed", "Requested"].includes(a.status) && a.appointment_date >= today);
+  const upcoming = appointments.filter(a => ["Confirmed", "Requested", "Pending", "Payment Pending"].includes(a.status) && a.appointment_date >= today);
   const displayList = tab === "upcoming" ? upcoming : appointments;
 
   if (authLoading || loading) {
@@ -104,7 +105,7 @@ export default function DoctorDashboard() {
             { label: "Total", value: appointments.length, color: "bg-gray-50 text-gray-800" },
             { label: "Upcoming", value: upcoming.length, color: "bg-teal-50 text-teal-800" },
             { label: "Completed", value: appointments.filter(a => a.status === "Completed").length, color: "bg-blue-50 text-blue-800" },
-            { label: "Pending", value: appointments.filter(a => a.status === "Requested").length, color: "bg-purple-50 text-purple-800" },
+            { label: "Pending", value: appointments.filter(a => ["Requested", "Pending"].includes(a.status)).length, color: "bg-purple-50 text-purple-800" },
           ].map((s) => (
             <div key={s.label} className={`${s.color} rounded-2xl p-5 text-center border border-gray-100`}>
               <div className="text-2xl font-bold">{s.value}</div>
@@ -142,7 +143,7 @@ export default function DoctorDashboard() {
                     {apt.reason && <p className="text-sm text-gray-400 mt-1">Reason: {apt.reason}</p>}
                   </div>
                   <div className="flex gap-2">
-                    {apt.status === "Requested" && (
+                    {["Requested", "Pending"].includes(apt.status) && (
                       <>
                         <button onClick={() => handleAction(apt.id, "Accept")} disabled={actionId === apt.id}
                           className="px-4 py-2 bg-green-50 text-green-700 text-sm font-medium rounded-lg hover:bg-green-100 transition-colors disabled:opacity-50">
@@ -153,6 +154,9 @@ export default function DoctorDashboard() {
                           Reject
                         </button>
                       </>
+                    )}
+                    {apt.status === "Payment Pending" && (
+                      <span className="text-sm font-medium text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg">Awaiting patient payment</span>
                     )}
                     {apt.status === "Confirmed" && (
                       <button onClick={() => handleComplete(apt.id)} disabled={actionId === apt.id}
