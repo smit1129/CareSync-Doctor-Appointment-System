@@ -224,3 +224,46 @@ def test_feedback_only_after_completed():
     assert res.status_code == 201
     
     db.close()
+
+# ============================================================================
+# 5. REFUND ENDPOINT AUTHORIZATION
+# ============================================================================
+
+def test_refund_authorization():
+    db = SessionLocal()
+    payment = db.query(Payment).first()
+    pay_id = payment.id
+    apt = payment.appointment
+    patient_email = apt.patient.user.email
+    
+    owner_token = get_auth_token(patient_email, "Patient@12345")
+    
+    unique_email = f"intruder_{uuid.uuid4().hex[:4]}@test.com"
+    register_patient(unique_email, "Intruder")
+    intruder_token = get_auth_token(unique_email, "Password@123")
+    
+    admin_token = state["admin_token"]
+    doc_token = state["doc_token"]
+
+    # 1. unauthenticated refund -> 401
+    res = client.post(f"/api/payments/{pay_id}/refund", json={"reason": "test"})
+    assert res.status_code == 401
+
+    # 2. doctor attempting refund -> 403
+    res = client.post(f"/api/payments/{pay_id}/refund", json={"reason": "test"}, headers={"Authorization": f"Bearer {doc_token}"})
+    assert res.status_code == 403
+
+    # 3. patient refunding another patient's payment -> 403
+    res = client.post(f"/api/payments/{pay_id}/refund", json={"reason": "test"}, headers={"Authorization": f"Bearer {intruder_token}"})
+    assert res.status_code == 403
+
+    # 4. admin refunding any payment -> allowed (200 or 400 depending on if it's already refunded)
+    res = client.post(f"/api/payments/{pay_id}/refund", json={"reason": "test"}, headers={"Authorization": f"Bearer {admin_token}"})
+    assert res.status_code in [200, 400] # 400 if already refunded
+
+    # 5. patient refunding own payment -> allowed
+    # (Just asserting it doesn't give 401/403, might give 400 if already refunded by admin above)
+    res = client.post(f"/api/payments/{pay_id}/refund", json={"reason": "test"}, headers={"Authorization": f"Bearer {owner_token}"})
+    assert res.status_code not in [401, 403]
+    
+    db.close()

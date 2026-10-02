@@ -65,7 +65,7 @@ def process_appointment_payment(
 def refund_payment(
     payment_id: str,
     req: RefundRequest = None,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_roles(["patient", "admin"])),
     db: Session = Depends(get_db)
 ):
     """Refund a completed payment (TC_17)."""
