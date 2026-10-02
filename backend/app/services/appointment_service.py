@@ -101,10 +101,18 @@ class AppointmentService:
         if not patient:
             raise NotFoundException("Patient not found")
 
+        # Validate doctor availability (Requirement 3)
+        available_slots = AppointmentService.get_available_slots(db, doctor_id, appointment_date)
+        requested_slot = next((slot for slot in available_slots if slot["start_time"] == start_time_str), None)
+        
+        if not requested_slot:
+            raise BadRequestException(f"Invalid slot: Doctor is not available at {start_time_str} on {appointment_date}")
+            
+        if not requested_slot["is_available"]:
+            raise ConflictException("Slot not available: Another appointment is already booked for this time")
+
         parsed_start = parse_time_str(start_time_str)
-        # Default 30 min duration
-        start_dt = datetime.combine(appointment_date, parsed_start)
-        parsed_end = (start_dt + timedelta(minutes=30)).time()
+        parsed_end = parse_time_str(requested_slot["end_time"])
 
         # Concurrency & Double-Booking Protection (TC_09):
         # We query for any active appointment matching doctor_id, date, and start_time

@@ -8,7 +8,7 @@ from backend.app.database import get_db
 from backend.app.models.user import User
 from backend.app.models.notification import Notification
 from backend.app.schemas.notification import NotificationResponse
-from backend.app.core.security import get_current_user
+from backend.app.core.security import get_current_user, require_roles
 from backend.app.core.exceptions import NotFoundException
 from backend.app.services.reminder_service import ReminderService
 
@@ -49,7 +49,7 @@ def mark_notification_as_read(
 @router.post("/run-reminders", response_model=List[NotificationResponse])
 def trigger_upcoming_reminders(
     target_date: Optional[date] = None,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_roles(["admin"])),
     db: Session = Depends(get_db)
 ):
     """

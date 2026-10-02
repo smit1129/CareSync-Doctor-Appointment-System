@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from backend.app.database import get_db
-from backend.app.models.user import User, Patient
+from backend.app.models.user import User, Patient, Doctor
+from backend.app.models.appointment import Appointment
 from backend.app.schemas.patient import PatientResponse, PatientUpdate
 from backend.app.core.security import get_current_user, require_roles
 from backend.app.core.exceptions import NotFoundException, ForbiddenException
@@ -81,5 +82,16 @@ def get_patient_by_id(
 
     if current_user.role == "patient" and patient.user_id != current_user.id:
         raise ForbiddenException("Access denied: You cannot view another patient's medical records")
+
+    if current_user.role == "doctor":
+        doctor = db.query(Doctor).filter(Doctor.user_id == current_user.id).first()
+        if not doctor:
+            raise ForbiddenException("Access denied: Doctor profile not found")
+        has_appointment = db.query(Appointment).filter(
+            Appointment.patient_id == patient_id,
+            Appointment.doctor_id == doctor.id
+        ).first()
+        if not has_appointment:
+            raise ForbiddenException("Access denied: Patient is not associated with any of your appointments")
 
     return format_patient_response(patient)

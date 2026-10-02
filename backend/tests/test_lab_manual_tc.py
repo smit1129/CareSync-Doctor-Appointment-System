@@ -143,7 +143,7 @@ def test_tc_08_book_an_available_appointment_slot():
     response = client.post("/api/appointments/book", json=payload, headers=headers)
     assert response.status_code == 201
     apt = response.json()
-    assert apt["status"] == "Payment Pending"
+    assert apt["status"] == "Requested"
     assert apt["appointment_date"] == str(target_date)
     assert apt["start_time"] == chosen_slot
     state["appointment_id"] = apt["id"]
@@ -183,11 +183,16 @@ def test_tc_11_cancel_a_confirmed_appointment():
     target_date = date.today() + timedelta(days=5)
     while target_date.weekday() >= 6:
         target_date += timedelta(days=1)
+    
+    slots_res = client.get(f"/api/doctors/{state['doctor_id']}/slots", params={"target_date": str(target_date)})
+    free_slots = [s for s in slots_res.json() if s["is_available"]]
+    chosen_slot_cancel = free_slots[0]["start_time"]
+
     headers = {"Authorization": f"Bearer {state['patient_token']}"}
     book_res = client.post("/api/appointments/book", json={
         "doctor_id": state["doctor_id"],
         "appointment_date": str(target_date),
-        "start_time": "14:00",
+        "start_time": chosen_slot_cancel,
         "reason": "To be cancelled"
     }, headers=headers)
     assert book_res.status_code == 201
@@ -201,8 +206,8 @@ def test_tc_11_cancel_a_confirmed_appointment():
 
     # Verify slot is freed up
     slots_res = client.get(f"/api/doctors/{state['doctor_id']}/slots", params={"target_date": str(target_date)})
-    slot_14 = next(s for s in slots_res.json() if s["start_time"] == "14:00")
-    assert slot_14["is_available"] is True, "Slot should be freed after cancellation"
+    slot_freed = next(s for s in slots_res.json() if s["start_time"] == chosen_slot_cancel)
+    assert slot_freed["is_available"] is True, "Slot should be freed after cancellation"
 
 def test_tc_12_view_appointment_history():
     """TC_12: View appointment history -> List of past and upcoming appointments displayed."""
@@ -250,19 +255,25 @@ def test_tc_13_doctor_updates_availability_schedule():
 def test_tc_14_doctor_accepts_or_rejects_pending_appointment():
     """TC_14: Doctor accepts/rejects a pending appointment -> Status changes to 'Confirmed'."""
     # Book a pending appointment as patient
-    target_date = date.today() + timedelta(days=4)
-    while target_date.weekday() >= 6:
+    target_date = date.today() + timedelta(days=1)
+    while target_date.weekday() != 1:  # Tuesday
         target_date += timedelta(days=1)
+
+    slots_res = client.get(f"/api/doctors/{state['doctor_id']}/slots", params={"target_date": str(target_date)})
+    free_slots = [s for s in slots_res.json() if s["is_available"]]
+    chosen_slot_14 = free_slots[0]["start_time"]
+
     pat_headers = {"Authorization": f"Bearer {state['patient_token']}"}
     book_res = client.post("/api/appointments/book", json={
         "doctor_id": state["doctor_id"],
         "appointment_date": str(target_date),
-        "start_time": "11:00",
+        "start_time": chosen_slot_14,
         "reason": "Consultation requiring confirmation",
         "initial_status": "Requested"
     }, headers=pat_headers)
     assert book_res.status_code == 201
     pending_apt_id = book_res.json()["id"]
+    state["appointment_id"] = pending_apt_id # Overwrite with an accepted one for payment test
 
     # Doctor accepts the appointment
     doc_headers = {"Authorization": f"Bearer {state['doctor_token']}"}
@@ -299,26 +310,36 @@ def test_tc_15_successful_payment_for_appointment():
     state["receipt_number"] = payment["receipt_number"]
 
     # Verify receipt retrieval
-    receipt_res = client.get(f"/api/payments/receipt/{state['receipt_number']}")
+    receipt_res = client.get(f"/api/payments/receipt/{state['receipt_number']}", headers=headers)
     assert receipt_res.status_code == 200
     assert receipt_res.json()["receipt_number"] == state["receipt_number"]
 
 def test_tc_16_payment_failure_handling():
     """TC_16: Payment failure handling -> Payment rejected; booking kept as Pending/failed."""
     # Book a new appointment to test failure
-    target_date = date.today() + timedelta(days=6)
-    while target_date.weekday() >= 6:
+    target_date = date.today() + timedelta(days=7)
+    while target_date.weekday() != 1:  # Tuesday
         target_date += timedelta(days=1)
+
+    slots_res = client.get(f"/api/doctors/{state['doctor_id']}/slots", params={"target_date": str(target_date)})
+    free_slots = [s for s in slots_res.json() if s["is_available"]]
+    chosen_slot_fail = free_slots[0]["start_time"]
+
     pat_headers = {"Authorization": f"Bearer {state['patient_token']}"}
     book_res = client.post("/api/appointments/book", json={
         "doctor_id": state["doctor_id"],
         "appointment_date": str(target_date),
-        "start_time": "16:00",
+        "start_time": chosen_slot_fail,
         "reason": "Test Payment Failure",
-        "initial_status": "Payment Pending"
+        "initial_status": "Requested"
     }, headers=pat_headers)
     assert book_res.status_code == 201
     apt_fail_id = book_res.json()["id"]
+
+    # We need to accept it first to pay!
+    doc_login = client.post("/api/auth/login", json={"email": "sarah.jenkins@hospital.com", "password": "Doctor@12345"})
+    doc_token = doc_login.json()["access_token"]
+    client.post(f"/api/appointments/{apt_fail_id}/doctor-action", json={"action": "Accept"}, headers={"Authorization": f"Bearer {doc_token}"})
 
     fail_payload = {
         "appointment_id": apt_fail_id,

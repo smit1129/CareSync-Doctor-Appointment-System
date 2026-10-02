@@ -73,7 +73,7 @@ def book_appointment(
         appointment_date=req.appointment_date,
         start_time_str=req.start_time,
         reason=req.reason,
-        initial_status=req.initial_status or "Confirmed"
+        initial_status="Requested"
     )
     return format_appointment_response(appointment)
 
@@ -115,6 +115,9 @@ def reschedule_appointment(
     if current_user.role == "patient" and old_apt.patient.user_id != current_user.id:
         raise ForbiddenException("Access denied: You can only reschedule your own appointments")
 
+    if old_apt.status not in ["Confirmed", "Payment Pending"]:
+        raise BadRequestException(f"Appointment cannot be rescheduled from state: {old_apt.status}")
+
     # Cancel old appointment
     old_apt.status = "Rescheduled"
     old_apt.cancellation_reason = f"Rescheduled to {req.new_date} {req.new_start_time}"
@@ -127,7 +130,7 @@ def reschedule_appointment(
         appointment_date=req.new_date,
         start_time_str=req.new_start_time,
         reason=old_apt.reason,
-        initial_status="Confirmed"
+        initial_status=old_apt.status
     )
     new_apt.rescheduled_from_id = old_apt.id
     db.commit()

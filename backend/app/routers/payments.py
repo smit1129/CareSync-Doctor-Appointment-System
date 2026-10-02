@@ -85,11 +85,21 @@ def refund_payment(
     return refunded_payment
 
 @router.get("/receipt/{receipt_number}", response_model=ReceiptResponse)
-def get_payment_receipt(receipt_number: str, db: Session = Depends(get_db)):
+def get_payment_receipt(
+    receipt_number: str, 
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """Retrieve full official receipt details by receipt number."""
     payment = db.query(Payment).filter(Payment.receipt_number == receipt_number).first()
     if not payment:
         raise NotFoundException("Receipt not found")
+
+    # Authorize: Patient of this payment, or admin
+    if current_user.role == "patient" and payment.patient.user_id != current_user.id:
+        raise ForbiddenException("Access denied: Not your payment receipt")
+    if current_user.role not in ["patient", "admin"]:
+        raise ForbiddenException("Access denied: Invalid role")
 
     appointment = payment.appointment
     doctor = appointment.doctor

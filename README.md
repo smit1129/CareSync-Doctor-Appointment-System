@@ -24,7 +24,7 @@ CareSync is a professional, full-stack healthcare appointment management platfor
 
 ### Backend
 - **Framework:** [FastAPI](https://fastapi.tiangolo.com/) (Python)
-- **Database:** SQLite (with WAL mode for concurrent writes) & SQLAlchemy ORM
+- **Database:** Supabase-hosted PostgreSQL database & SQLAlchemy ORM (with Supabase connection/pooler as configured)
 - **Authentication:** JWT (JSON Web Tokens) with Role-Based Access Control (RBAC)
 - **Validation:** Pydantic models
 
@@ -99,6 +99,6 @@ You can use the following pre-seeded accounts to explore the system locally. Do 
 
 ## Core Highlights
 
-1. **Concurrency Safety:** Enforces unique active slots at the database level (`idx_unique_active_doctor_slot`) using SQLite partial indexes. This ensures multiple patients cannot double-book a doctor at the exact same time.
+1. **Concurrency Safety:** Enforces unique active slots at the database level (`idx_unique_active_doctor_slot`) using PostgreSQL partial indexes. This ensures multiple patients cannot double-book a doctor at the exact same time.
 2. **Dynamic Slot Generation:** The backend computes available slots on the fly based on the doctor's defined schedule and filters out any already-confirmed appointments.
 3. **Comprehensive Test Suite:** Includes 23 passing Lab Manual test cases (including security tests for RBAC and SQL injection prevention), verifying the entire business logic flow.

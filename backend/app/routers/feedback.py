@@ -45,6 +45,9 @@ def submit_feedback(
     if current_user.role == "patient" and appointment.patient_id != patient.id:
         raise ForbiddenException("Access denied: You can only review your own appointments")
 
+    if appointment.status != "Completed":
+        raise BadRequestException("Feedback can only be submitted for completed appointments")
+
     # Check if feedback already submitted
     existing_fb = db.query(FeedbackRating).filter(FeedbackRating.appointment_id == req.appointment_id).first()
     if existing_fb:

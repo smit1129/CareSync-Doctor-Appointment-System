@@ -8,7 +8,6 @@ class AppointmentCreate(BaseModel):
     start_time: str = Field(..., description="Start time (HH:MM or HH:MM:SS)")
     end_time: Optional[str] = Field(None, description="End time (defaults to start_time + 30 min)")
     reason: Optional[str] = Field(None, description="Reason for consultation")
-    initial_status: Optional[str] = Field("Confirmed", description="Confirmed or Requested")
 
     @field_validator("appointment_date")
     @classmethod
