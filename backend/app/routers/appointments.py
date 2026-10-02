@@ -229,6 +229,9 @@ def mark_appointment_completed(
     if not appointment:
         raise NotFoundException("Appointment not found")
 
+    if current_user.role == "doctor" and appointment.doctor_id != current_user.doctor.id:
+        raise ForbiddenException("Access denied: Not assigned to this appointment")
+
     appointment.status = "Completed"
     # Prompt patient for feedback
     db.add(Notification(

@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 
 from backend.app.main import app
 
+app.state.limiter.enabled = False
 client = TestClient(app)
 
 def test_rbac_patient_cannot_access_admin_stats():

@@ -11,6 +11,7 @@ from backend.app.main import app
 from backend.app.database import init_db, SessionLocal, Base, engine
 from backend.seed_data import seed_database
 
+app.state.limiter.enabled = False
 client = TestClient(app)
 
 @pytest.fixture(scope="module", autouse=True)
@@ -90,8 +91,7 @@ def test_tc_05_password_reset_request():
     response = client.post("/api/auth/forgot-password", json=payload)
     assert response.status_code == 200
     data = response.json()
-    assert "Password reset link sent" in data["message"]
-    assert "token" in data
+    assert "If the account exists" in data["message"]
 
 # ============================================================================
 # DOCTOR SEARCH & APPOINTMENT BOOKING (TC_06 - TC_12)
@@ -138,12 +138,12 @@ def test_tc_08_book_an_available_appointment_slot():
         "appointment_date": str(target_date),
         "start_time": chosen_slot,
         "reason": "Cardiology evaluation",
-        "initial_status": "Confirmed"
+        "initial_status": "Payment Pending"
     }
     response = client.post("/api/appointments/book", json=payload, headers=headers)
     assert response.status_code == 201
     apt = response.json()
-    assert apt["status"] == "Confirmed"
+    assert apt["status"] == "Payment Pending"
     assert apt["appointment_date"] == str(target_date)
     assert apt["start_time"] == chosen_slot
     state["appointment_id"] = apt["id"]
@@ -272,7 +272,7 @@ def test_tc_14_doctor_accepts_or_rejects_pending_appointment():
         headers=doc_headers
     )
     assert action_res.status_code == 200
-    assert action_res.json()["status"] == "Confirmed"
+    assert action_res.json()["status"] == "Payment Pending"
 
 # ============================================================================
 # PAYMENT PROCESSING (TC_15 - TC_17)
@@ -315,7 +315,7 @@ def test_tc_16_payment_failure_handling():
         "appointment_date": str(target_date),
         "start_time": "16:00",
         "reason": "Test Payment Failure",
-        "initial_status": "Requested"
+        "initial_status": "Payment Pending"
     }, headers=pat_headers)
     assert book_res.status_code == 201
     apt_fail_id = book_res.json()["id"]

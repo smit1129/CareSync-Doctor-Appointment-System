@@ -35,15 +35,24 @@ def process_appointment_payment(
     patient = db.query(Patient).filter(Patient.user_id == current_user.id).first()
     patient_id = patient.id if patient else appointment.patient_id
 
+    if current_user.role == "patient" and (not patient or appointment.patient_id != patient.id):
+        raise ForbiddenException("Access denied: You can only pay for your own appointments")
+
+    if appointment.status not in ["Payment Pending"]:
+        raise BadRequestException(f"Appointment is not in a payable state: {appointment.status}")
+
     # Check if already paid
     if appointment.payment and appointment.payment.status == "completed":
         return appointment.payment
 
+    # Server-authoritative amount calculation
+    actual_amount = float(appointment.doctor.consultation_fee)
+
     payment = PaymentService.process_payment(
         db=db,
         appointment_id=req.appointment_id,
-        patient_id=patient_id,
-        amount=req.amount,
+        patient_id=patient.id if patient else appointment.patient_id,
+        amount=actual_amount,
         payment_mode=req.payment_mode,
         simulate_failure=bool(req.simulate_failure),
         card_number=req.card_number,

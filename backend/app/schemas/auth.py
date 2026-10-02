@@ -7,7 +7,6 @@ class UserRegisterRequest(BaseModel):
     email: EmailStr = Field(..., description="Valid unique email address")
     phone: Optional[str] = Field(None, description="Contact phone number")
     password: str = Field(..., min_length=6, description="Account password")
-    role: str = Field(default="patient", description="Role: patient, doctor, admin")
 
 class UserLoginRequest(BaseModel):
     email: str = Field(..., description="Registered email address")

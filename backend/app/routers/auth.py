@@ -1,7 +1,8 @@
 import uuid
 from datetime import datetime, timedelta
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Request
 from sqlalchemy.orm import Session
+from backend.app.core.limiter import limiter
 
 from backend.app.database import get_db
 from backend.app.models.user import User, Patient, Doctor, PasswordReset
@@ -20,7 +21,8 @@ from backend.app.core.exceptions import BadRequestException, UnauthorizedExcepti
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-def register(req: UserRegisterRequest, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def register(request: Request, req: UserRegisterRequest, db: Session = Depends(get_db)):
     """
     Patient Registration (Req 1.1, TC_01, TC_02).
     Validates user details, checks email uniqueness, securely hashes password.
@@ -36,29 +38,19 @@ def register(req: UserRegisterRequest, db: Session = Depends(get_db)):
         email=normalized_email,
         password_hash=hash_password(req.password),
         full_name=req.name.strip(),
-        role=req.role or "patient",
+        role="patient",
         phone_number=req.phone,
         is_active=True
     )
     db.add(new_user)
     db.flush()
 
-    if new_user.role == "patient":
-        patient_profile = Patient(
-            id=str(uuid.uuid4()),
-            user_id=new_user.id,
-            contact_no=req.phone
-        )
-        db.add(patient_profile)
-    elif new_user.role == "doctor":
-        doctor_profile = Doctor(
-            id=str(uuid.uuid4()),
-            user_id=new_user.id,
-            specialization="General Medicine",
-            qualification="MBBS",
-            clinic_address="Main Medical Center"
-        )
-        db.add(doctor_profile)
+    patient_profile = Patient(
+        id=str(uuid.uuid4()),
+        user_id=new_user.id,
+        contact_no=req.phone
+    )
+    db.add(patient_profile)
 
     # Welcome notification
     db.add(Notification(
@@ -74,7 +66,8 @@ def register(req: UserRegisterRequest, db: Session = Depends(get_db)):
     return new_user
 
 @router.post("/login", response_model=TokenResponse)
-def login(req: UserLoginRequest, db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+def login(request: Request, req: UserLoginRequest, db: Session = Depends(get_db)):
     """
     User Login (Req 1.2, TC_03, TC_04, TC_23).
     Parameterized ORM query protects against SQL injection.
@@ -104,15 +97,15 @@ def login(req: UserLoginRequest, db: Session = Depends(get_db)):
     )
 
 @router.post("/forgot-password")
-def forgot_password(req: PasswordResetRequest, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def forgot_password(request: Request, req: PasswordResetRequest, db: Session = Depends(get_db)):
     """
     Password reset request (TC_05).
     Sends password reset link/token to registered email.
     """
     user = db.query(User).filter(User.email == req.email.lower().strip()).first()
     if not user:
-        # Standard security practice: generic success message to prevent user enumeration
-        return {"message": "Password reset link sent to the email", "token": "simulated-token"}
+        return {"message": "If the account exists, a password reset link has been sent."}
 
     reset_token = uuid.uuid4().hex
     reset_entry = PasswordReset(
@@ -124,13 +117,17 @@ def forgot_password(req: PasswordResetRequest, db: Session = Depends(get_db)):
     db.add(reset_entry)
     db.commit()
 
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"DEMO MODE / LOCAL DEV: Password reset token for {req.email} is: {reset_token}")
+
     return {
-        "message": "Password reset link sent to the email",
-        "token": reset_token
+        "message": "If the account exists, a password reset link has been sent."
     }
 
 @router.post("/reset-password")
-def reset_password(req: PasswordResetConfirm, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def reset_password(request: Request, req: PasswordResetConfirm, db: Session = Depends(get_db)):
     """
     Confirm password reset using token and update password.
     """

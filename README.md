@@ -62,6 +62,16 @@ python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
 The backend will be running at `http://localhost:8000`.
 API Documentation (Swagger UI) is available at `http://localhost:8000/docs`.
 
+### Security / Environment Setup
+
+Before running in production, ensure the following:
+- Copy `.env.example` to `.env` and configure your environment variables.
+- Set a strong `SECRET_KEY` in your `.env` file (e.g. `openssl rand -hex 32`).
+- Never commit the `.env` file or any real secrets to version control.
+- Set `FRONTEND_URL` in your backend `.env` to restrict CORS to your production domain.
+- The password reset flow currently logs the token in local dev instead of emailing it, configure an email provider for real production usage.
+- Payments are in demo/test mode and use simulated processing.
+
 ### 2. Frontend Setup
 
 ```bash
@@ -77,9 +87,9 @@ npm run dev
 
 The frontend will be running at `http://localhost:3000`.
 
-## Demo Credentials
+## Demo Credentials (LOCAL/DEVELOPMENT ONLY)
 
-You can use the following pre-seeded accounts to explore the system:
+You can use the following pre-seeded accounts to explore the system locally. Do NOT use these in a production environment:
 
 | Role | Email | Password |
 |---|---|---|

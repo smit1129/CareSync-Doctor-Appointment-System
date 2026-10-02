@@ -9,7 +9,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - SECRET_KEY=super-secret-production-key-2026-doctor-mgmt
+      - SECRET_KEY=${SECRET_KEY}
       - DATABASE_URL=sqlite:///./doctor_appointments.db
       - SUPABASE_URL=
       - SUPABASE_ANON_KEY=
