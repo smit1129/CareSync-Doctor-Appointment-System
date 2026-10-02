@@ -215,7 +215,8 @@ def seed_database(db: Session):
         start_time=time(10, 0),
         end_time=time(10, 30),
         status="Confirmed",
-        reason="Routine cardiovascular follow-up"
+        reason="Routine cardiovascular follow-up",
+        consultation_fee_snapshot=1200.0
     )
     db.add(apt1)
     db.flush()

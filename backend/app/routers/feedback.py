@@ -30,7 +30,7 @@ def format_feedback(fb: FeedbackRating) -> dict:
 @router.post("", response_model=FeedbackResponse, status_code=status.HTTP_201_CREATED)
 def submit_feedback(
     req: FeedbackCreate,
-    current_user: User = Depends(require_roles(["patient", "admin"])),
+    current_user: User = Depends(require_roles(["patient"])),
     db: Session = Depends(get_db)
 ):
     """

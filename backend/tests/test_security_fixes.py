@@ -267,3 +267,87 @@ def test_refund_authorization():
     assert res.status_code not in [401, 403]
     
     db.close()
+
+# ============================================================================
+# 6. FEEDBACK — ADMIN CANNOT SUBMIT FEEDBACK
+# ============================================================================
+
+def test_feedback_admin_cannot_submit():
+    """Admin should NOT be able to submit feedback (patient-only operation)."""
+    db = SessionLocal()
+    apt = db.query(Appointment).first()
+    apt.status = "Completed"
+    db.commit()
+    apt_id = apt.id
+    db.close()
+
+    res = client.post("/api/feedback", json={
+        "appointment_id": apt_id,
+        "rating": 4,
+        "comment": "Admin attempting feedback"
+    }, headers={"Authorization": f"Bearer {state['admin_token']}"})
+    assert res.status_code == 403, f"Admin should be denied feedback submission, got {res.status_code}"
+
+def test_feedback_doctor_cannot_submit():
+    """Doctor should NOT be able to submit feedback."""
+    db = SessionLocal()
+    apt = db.query(Appointment).first()
+    apt.status = "Completed"
+    db.commit()
+    apt_id = apt.id
+    db.close()
+
+    res = client.post("/api/feedback", json={
+        "appointment_id": apt_id,
+        "rating": 4,
+        "comment": "Doctor attempting feedback"
+    }, headers={"Authorization": f"Bearer {state['doc_token']}"})
+    assert res.status_code == 403, f"Doctor should be denied feedback submission, got {res.status_code}"
+
+# ============================================================================
+# 7. CONSULTATION FEE SNAPSHOT
+# ============================================================================
+
+def test_consultation_fee_snapshot_captured_at_booking():
+    """Booking should capture the doctor's consultation fee at the time of booking."""
+    target_date = date.today() + timedelta(days=1)
+    while target_date.weekday() != 1:  # Tuesday
+        target_date += timedelta(days=1)
+
+    slots_res = client.get(f"/api/doctors/{state['doctor_id']}/slots", params={"target_date": str(target_date)})
+    free_slots = [s for s in slots_res.json() if s["is_available"]]
+    assert free_slots, "Need a free slot"
+    slot = free_slots[-1]["start_time"]  # Use last slot to avoid conflicts
+
+    res = client.post("/api/appointments/book", json={
+        "doctor_id": state["doctor_id"],
+        "appointment_date": str(target_date),
+        "start_time": slot,
+        "reason": "Fee snapshot test"
+    }, headers={"Authorization": f"Bearer {state['p1_token']}"})
+    assert res.status_code == 201
+    apt_id = res.json()["id"]
+
+    # Verify the snapshot was stored in the database
+    db = SessionLocal()
+    apt = db.query(Appointment).filter(Appointment.id == apt_id).first()
+    assert apt.consultation_fee_snapshot is not None, "Fee snapshot should be captured at booking"
+    assert apt.consultation_fee_snapshot > 0, "Fee snapshot should be a positive number"
+    db.close()
+
+# ============================================================================
+# 8. PASSWORD RESET TOKEN NOT LEAKED IN RESPONSE
+# ============================================================================
+
+def test_password_reset_token_not_in_response():
+    """Password reset endpoint must NOT return the raw token in the API response."""
+    res = client.post("/api/auth/forgot-password", json={
+        "email": "john.doe@gmail.com"
+    })
+    assert res.status_code == 200
+    data = res.json()
+    # Must not contain a token field
+    assert "token" not in data, "Reset token must not be returned in API response"
+    assert "reset_token" not in data, "Reset token must not be returned in API response"
+    # Should contain a generic message
+    assert "message" in data

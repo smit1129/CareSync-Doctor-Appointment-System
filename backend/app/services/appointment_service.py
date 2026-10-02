@@ -141,7 +141,8 @@ class AppointmentService:
             start_time=parsed_start,
             end_time=parsed_end,
             status=initial_status,
-            reason=reason or "General Consultation"
+            reason=reason or "General Consultation",
+            consultation_fee_snapshot=float(doctor.consultation_fee)
         )
         db.add(appointment)
 

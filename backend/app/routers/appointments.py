@@ -130,7 +130,7 @@ def reschedule_appointment(
         appointment_date=req.new_date,
         start_time_str=req.new_start_time,
         reason=old_apt.reason,
-        initial_status=old_apt.status
+        initial_status="Requested"
     )
     new_apt.rescheduled_from_id = old_apt.id
     db.commit()

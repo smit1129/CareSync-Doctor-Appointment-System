@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Integer, Time, Date, Text, Index
+from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Integer, Float, Time, Date, Text, Index
 from sqlalchemy.orm import relationship
 from backend.app.database import Base
 
@@ -32,6 +32,7 @@ class Appointment(Base):
     end_time = Column(Time, nullable=False)
     status = Column(String(30), nullable=False, default="Confirmed")  # Requested, Confirmed, Rejected, Cancelled, Rescheduled, Completed
     reason = Column(Text, nullable=True)
+    consultation_fee_snapshot = Column(Float, nullable=True)  # Frozen fee at booking time
     cancellation_reason = Column(Text, nullable=True)
     rescheduled_from_id = Column(String(36), ForeignKey("appointments.id", ondelete="SET NULL"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)

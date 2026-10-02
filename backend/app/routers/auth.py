@@ -119,7 +119,8 @@ def forgot_password(request: Request, req: PasswordResetRequest, db: Session = D
 
     import logging
     logger = logging.getLogger(__name__)
-    logger.info(f"DEMO MODE / LOCAL DEV: Password reset token for {req.email} is: {reset_token}")
+    logger.info(f"Password reset token generated for {req.email} (token not logged for security)")
+    # NOTE: In production, send the token via email. Never log the actual token value.
 
     return {
         "message": "If the account exists, a password reset link has been sent."

@@ -45,8 +45,9 @@ def process_appointment_payment(
     if appointment.payment and appointment.payment.status == "completed":
         return appointment.payment
 
-    # Server-authoritative amount calculation
-    actual_amount = float(appointment.doctor.consultation_fee)
+    # Server-authoritative amount calculation from the fee snapshot captured at booking time
+    # Falls back to current fee for pre-existing appointments without a snapshot
+    actual_amount = float(appointment.consultation_fee_snapshot or appointment.doctor.consultation_fee)
 
     payment = PaymentService.process_payment(
         db=db,
