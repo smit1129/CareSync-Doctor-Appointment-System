@@ -42,11 +42,11 @@ def register_patient(email, name, password="Password@123"):
     return res.json()
 
 def test_setup_state():
-    state["p1_token"] = get_auth_token("john.doe@gmail.com", "Patient@12345")
+    state["p1_token"] = get_auth_token("smit.gamit@demo.caresync.local", "Patient@12345")
     register_patient("patient2@test.com", "Patient Two")
     state["p2_token"] = get_auth_token("patient2@test.com", "Password@123")
-    state["admin_token"] = get_auth_token("admin@hospital.com", "Admin@12345")
-    state["doc_token"] = get_auth_token("sarah.jenkins@hospital.com", "Doctor@12345")
+    state["admin_token"] = get_auth_token("admin@demo.caresync.local", "Admin@12345")
+    state["doc_token"] = get_auth_token("aarav.mehta@demo.caresync.local", "Doctor@12345")
     
     docs = client.get("/api/doctors", params={"specialization": "Cardiologist"}).json()
     state["doctor_id"] = docs[0]["id"]
@@ -342,7 +342,7 @@ def test_consultation_fee_snapshot_captured_at_booking():
 def test_password_reset_token_not_in_response():
     """Password reset endpoint must NOT return the raw token in the API response."""
     res = client.post("/api/auth/forgot-password", json={
-        "email": "john.doe@gmail.com"
+        "email": "smit.gamit@demo.caresync.local"
     })
     assert res.status_code == 200
     data = res.json()

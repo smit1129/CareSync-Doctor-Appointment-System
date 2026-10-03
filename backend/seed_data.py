@@ -27,7 +27,7 @@ def seed_database(db: Session):
     # 1. ADMIN USER
     admin_user = User(
         id="usr-admin-01",
-        email="admin@hospital.com",
+        email="admin@demo.caresync.local",
         password_hash=admin_pw,
         full_name="Hospital Administrator",
         role="admin",
@@ -41,8 +41,8 @@ def seed_database(db: Session):
         {
             "user_id": "usr-doc-01",
             "doc_id": "doc-01",
-            "name": "Dr. Sarah Jenkins",
-            "email": "sarah.jenkins@hospital.com",
+            "name": "Dr. Aarav Mehta",
+            "email": "aarav.mehta@demo.caresync.local",
             "phone": "+1-555-0101",
             "specialization": "Cardiologist",
             "qualification": "MD, FACC, Harvard Medical",
@@ -160,8 +160,8 @@ def seed_database(db: Session):
         {
             "user_id": "usr-pat-01",
             "pat_id": "pat-01",
-            "name": "John Doe",
-            "email": "john.doe@gmail.com",
+            "name": "Smit Gamit",
+            "email": "smit.gamit@demo.caresync.local",
             "phone": "+1-555-0150",
             "dob": date(1988, 4, 12),
             "gender": "Male",

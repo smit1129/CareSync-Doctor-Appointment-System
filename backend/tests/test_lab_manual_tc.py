@@ -227,7 +227,7 @@ def test_tc_13_doctor_updates_availability_schedule():
     """TC_13: Doctor updates availability schedule -> Reflected in patient slot search."""
     # Login as Dr. Sarah Jenkins
     login_res = client.post("/api/auth/login", json={
-        "email": "sarah.jenkins@hospital.com",
+        "email": "aarav.mehta@demo.caresync.local",
         "password": "Doctor@12345"
     })
     assert login_res.status_code == 200
@@ -337,7 +337,7 @@ def test_tc_16_payment_failure_handling():
     apt_fail_id = book_res.json()["id"]
 
     # We need to accept it first to pay!
-    doc_login = client.post("/api/auth/login", json={"email": "sarah.jenkins@hospital.com", "password": "Doctor@12345"})
+    doc_login = client.post("/api/auth/login", json={"email": "aarav.mehta@demo.caresync.local", "password": "Doctor@12345"})
     doc_token = doc_login.json()["access_token"]
     client.post(f"/api/appointments/{apt_fail_id}/doctor-action", json={"action": "Accept"}, headers={"Authorization": f"Bearer {doc_token}"})
 
@@ -390,7 +390,7 @@ def test_tc_19_reminder_notification_before_appointment():
     """TC_19: Reminder notification before appointment -> Reminder sent 24 hours before."""
     # Log in as admin and run reminder trigger
     admin_login = client.post("/api/auth/login", json={
-        "email": "admin@hospital.com",
+        "email": "admin@demo.caresync.local",
         "password": "Admin@12345"
     })
     assert admin_login.status_code == 200
@@ -478,7 +478,7 @@ def test_tc_23_sql_injection_attempt_in_login_form():
     """TC_23: SQL injection attempt in login form -> Input rejected; no database error exposed."""
     malicious_emails = [
         "' OR '1'='1",
-        "admin@hospital.com' --",
+        "admin@demo.caresync.local' --",
         "' UNION SELECT * FROM users --",
         "'; DROP TABLE users; --"
     ]

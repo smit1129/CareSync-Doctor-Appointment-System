@@ -4,7 +4,7 @@ from pydantic import BaseModel, EmailStr, Field, ConfigDict
 
 class UserRegisterRequest(BaseModel):
     name: str = Field(..., min_length=2, max_length=150, description="Full Name of the patient")
-    email: EmailStr = Field(..., description="Valid unique email address")
+    email: str = Field(..., description="Valid unique email address")
     phone: Optional[str] = Field(None, description="Contact phone number")
     password: str = Field(..., min_length=6, description="Account password")
 
@@ -21,7 +21,7 @@ class TokenResponse(BaseModel):
     email: str
 
 class PasswordResetRequest(BaseModel):
-    email: EmailStr = Field(..., description="Registered email for password reset")
+    email: str = Field(..., description="Registered email for password reset")
 
 class PasswordResetConfirm(BaseModel):
     token: str = Field(..., description="Reset verification token")

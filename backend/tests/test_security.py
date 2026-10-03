@@ -13,7 +13,7 @@ client = TestClient(app)
 def test_rbac_patient_cannot_access_admin_stats():
     """Verify that a patient cannot access admin-only endpoints (403 Forbidden)."""
     login_res = client.post("/api/auth/login", json={
-        "email": "john.doe@gmail.com",
+        "email": "smit.gamit@demo.caresync.local",
         "password": "Patient@12345"
     })
     assert login_res.status_code == 200
@@ -27,7 +27,7 @@ def test_rbac_patient_cannot_access_admin_stats():
 def test_rbac_doctor_cannot_delete_another_doctor():
     """Verify that a doctor cannot delete another doctor profile (403 Forbidden)."""
     login_res = client.post("/api/auth/login", json={
-        "email": "sarah.jenkins@hospital.com",
+        "email": "aarav.mehta@demo.caresync.local",
         "password": "Doctor@12345"
     })
     assert login_res.status_code == 200
