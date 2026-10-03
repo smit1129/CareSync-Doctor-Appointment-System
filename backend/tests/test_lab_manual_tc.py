@@ -225,7 +225,7 @@ def test_tc_12_view_appointment_history():
 
 def test_tc_13_doctor_updates_availability_schedule():
     """TC_13: Doctor updates availability schedule -> Reflected in patient slot search."""
-    # Login as Dr. Sarah Jenkins
+    # Login as Dr. Aarav Mehta
     login_res = client.post("/api/auth/login", json={
         "email": "aarav.mehta@demo.caresync.local",
         "password": "Doctor@12345"
@@ -409,11 +409,11 @@ def test_tc_20_admin_adds_a_new_doctor_profile():
     admin_headers = {"Authorization": f"Bearer {state['admin_token']}"}
     payload = {
         "name": "Dr. Eleanor Vance",
-        "email": "eleanor.vance@hospital.com",
+        "email": "eleanor.vance@demo.caresync.local",
         "password": "Doctor@12345",
-        "phone_number": "+1-555-8899",
+        "phone_number": "+91 98765 09009",
         "specialization": "Endocrinologist",
-        "qualification": "MD, Harvard Medical",
+        "qualification": "MBBS, MD (Endocrinology)",
         "experience_years": 11,
         "clinic_address": "Endocrine Clinic Suite 305",
         "consultation_fee": 1100.00,

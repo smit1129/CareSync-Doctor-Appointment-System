@@ -94,7 +94,7 @@ def test_payment_receipt_auth_ownership():
 
 def test_client_cannot_control_initial_status():
     target_date = date.today() + timedelta(days=1)
-    while target_date.weekday() != 1:  # Tuesday for Dr. Sarah Jenkins
+    while target_date.weekday() != 1:  # Tuesday for Dr. Aarav Mehta
         target_date += timedelta(days=1)
         
     slots_res = client.get(f"/api/doctors/{state['doctor_id']}/slots", params={"target_date": str(target_date)})

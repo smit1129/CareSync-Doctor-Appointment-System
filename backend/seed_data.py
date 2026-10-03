@@ -31,87 +31,132 @@ def seed_database(db: Session):
         password_hash=admin_pw,
         full_name="Hospital Administrator",
         role="admin",
-        phone_number="+1-555-0100",
+        phone_number="+91 90000 00001",
         is_active=True
     )
     db.add(admin_user)
 
-    # 2. DOCTORS
+    # 2. DOCTORS (8 Indian demo doctors)
     doctors_info = [
         {
             "user_id": "usr-doc-01",
             "doc_id": "doc-01",
             "name": "Dr. Aarav Mehta",
             "email": "aarav.mehta@demo.caresync.local",
-            "phone": "+1-555-0101",
+            "phone": "+91 98765 01001",
             "specialization": "Cardiologist",
-            "qualification": "MD, FACC, Harvard Medical",
-            "exp": 14,
-            "address": "Heart & Vascular Suite 402, Metro Health Center",
+            "qualification": "MBBS, MD (Medicine), DM (Cardiology)",
+            "exp": 12,
+            "address": "Heart & Vascular Centre, Ahmedabad, Gujarat",
             "fee": 1200.0,
-            "bio": "Board-certified cardiologist specializing in non-invasive cardiovascular treatments, preventative care, and heart failure management.",
-            "rating": 4.9,
+            "bio": "Experienced cardiologist specializing in non-invasive cardiovascular treatments, preventative cardiac care, and heart failure management.",
+            "rating": 5.0,
             "count": 28
         },
         {
             "user_id": "usr-doc-02",
             "doc_id": "doc-02",
-            "name": "Dr. Marcus Vance",
-            "email": "marcus.vance@hospital.com",
-            "phone": "+1-555-0102",
-            "specialization": "Dermatologist",
-            "qualification": "MD, American Board of Dermatology",
-            "exp": 10,
-            "address": "Skin & Wellness Center, Level 2",
-            "fee": 900.0,
-            "bio": "Specialist in clinical and cosmetic dermatology, acne therapies, eczema, and skin cancer screenings.",
-            "rating": 4.8,
-            "count": 19
-        },
-        {
-            "user_id": "usr-doc-03",
-            "doc_id": "doc-03",
             "name": "Dr. Priya Sharma",
-            "email": "priya.sharma@hospital.com",
-            "phone": "+1-555-0103",
+            "email": "priya.sharma@demo.caresync.local",
+            "phone": "+91 98765 01002",
             "specialization": "Pediatrician",
-            "qualification": "MBBS, MD Pediatrics, Johns Hopkins",
+            "qualification": "MBBS, MD (Pediatrics)",
             "exp": 8,
-            "address": "Childrens Care Wing, Room 108",
+            "address": "Children's Care Clinic, Vadodara, Gujarat",
             "fee": 800.0,
             "bio": "Compassionate pediatric specialist dedicated to child health, vaccinations, growth monitoring, and developmental wellbeing.",
             "rating": 5.0,
             "count": 35
         },
         {
+            "user_id": "usr-doc-03",
+            "doc_id": "doc-03",
+            "name": "Dr. Rohan Patel",
+            "email": "rohan.patel@demo.caresync.local",
+            "phone": "+91 98765 01003",
+            "specialization": "Dermatologist",
+            "qualification": "MBBS, MD (Dermatology)",
+            "exp": 9,
+            "address": "Skin & Wellness Clinic, Ahmedabad, Gujarat",
+            "fee": 900.0,
+            "bio": "Specialist in clinical and cosmetic dermatology, acne therapies, eczema treatment, and skin health management.",
+            "rating": 4.8,
+            "count": 19
+        },
+        {
             "user_id": "usr-doc-04",
             "doc_id": "doc-04",
-            "name": "Dr. Alex Mercer",
-            "email": "alex.mercer@hospital.com",
-            "phone": "+1-555-0104",
-            "specialization": "Neurologist",
-            "qualification": "MD, PhD Neuroscience, Oxford",
-            "exp": 16,
-            "address": "Brain & Nerve Institute, 6th Floor",
-            "fee": 1500.0,
-            "bio": "Leading neurologist treating migraines, neurological disorders, cognitive disorders, and stroke rehabilitation.",
-            "rating": 4.9,
-            "count": 22
+            "name": "Dr. Neha Shah",
+            "email": "neha.shah@demo.caresync.local",
+            "phone": "+91 98765 01004",
+            "specialization": "General Physician",
+            "qualification": "MBBS, MD (General Medicine)",
+            "exp": 7,
+            "address": "Shree Health Clinic, Surat, Gujarat",
+            "fee": 600.0,
+            "bio": "Experienced general physician focusing on routine check-ups, lifestyle diseases, diabetes, and hypertension management.",
+            "rating": 4.7,
+            "count": 14
         },
         {
             "user_id": "usr-doc-05",
             "doc_id": "doc-05",
-            "name": "Dr. Emily Stone",
-            "email": "emily.stone@hospital.com",
-            "phone": "+1-555-0105",
-            "specialization": "General Physician",
-            "qualification": "MBBS, General Medicine",
-            "exp": 7,
-            "address": "Primary Care Wing, Clinic A",
-            "fee": 600.0,
-            "bio": "Experienced family physician focusing on routine check-ups, lifestyle diseases, diabetes and hypertension management.",
-            "rating": 4.7,
-            "count": 14
+            "name": "Dr. Kunal Desai",
+            "email": "kunal.desai@demo.caresync.local",
+            "phone": "+91 98765 01005",
+            "specialization": "Neurologist",
+            "qualification": "MBBS, MD (Medicine), DM (Neurology)",
+            "exp": 11,
+            "address": "NeuroCare Centre, Mumbai, Maharashtra",
+            "fee": 1100.0,
+            "bio": "Leading neurologist treating migraines, neurological disorders, epilepsy, and stroke rehabilitation.",
+            "rating": 4.9,
+            "count": 22
+        },
+        {
+            "user_id": "usr-doc-06",
+            "doc_id": "doc-06",
+            "name": "Dr. Ananya Joshi",
+            "email": "ananya.joshi@demo.caresync.local",
+            "phone": "+91 98765 01006",
+            "specialization": "Gynecologist",
+            "qualification": "MBBS, MD (Obstetrics & Gynecology)",
+            "exp": 10,
+            "address": "Women's Care Hospital, Vadodara, Gujarat",
+            "fee": 1000.0,
+            "bio": "Dedicated gynecologist specializing in women's health, prenatal care, high-risk pregnancies, and minimally invasive surgeries.",
+            "rating": 4.9,
+            "count": 31
+        },
+        {
+            "user_id": "usr-doc-07",
+            "doc_id": "doc-07",
+            "name": "Dr. Vivek Trivedi",
+            "email": "vivek.trivedi@demo.caresync.local",
+            "phone": "+91 98765 01007",
+            "specialization": "Orthopedic Surgeon",
+            "qualification": "MBBS, MS (Orthopedics)",
+            "exp": 13,
+            "address": "OrthoCare Hospital, Ahmedabad, Gujarat",
+            "fee": 1000.0,
+            "bio": "Skilled orthopedic surgeon specializing in joint replacement, sports injuries, fracture management, and spinal disorders.",
+            "rating": 4.8,
+            "count": 25
+        },
+        {
+            "user_id": "usr-doc-08",
+            "doc_id": "doc-08",
+            "name": "Dr. Meera Iyer",
+            "email": "meera.iyer@demo.caresync.local",
+            "phone": "+91 98765 01008",
+            "specialization": "ENT Specialist",
+            "qualification": "MBBS, MS (ENT)",
+            "exp": 8,
+            "address": "ENT & Hearing Care Centre, Bengaluru, Karnataka",
+            "fee": 750.0,
+            "bio": "Experienced ENT specialist providing comprehensive care for ear, nose, and throat conditions including hearing disorders and sinus treatments.",
+            "rating": 4.8,
+            "count": 18
         }
     ]
 
@@ -162,7 +207,7 @@ def seed_database(db: Session):
             "pat_id": "pat-01",
             "name": "Smit Gamit",
             "email": "smit.gamit@demo.caresync.local",
-            "phone": "+1-555-0150",
+            "phone": "+91 98765 02001",
             "dob": date(1988, 4, 12),
             "gender": "Male",
             "blood": "O+",
@@ -171,13 +216,13 @@ def seed_database(db: Session):
         {
             "user_id": "usr-pat-02",
             "pat_id": "pat-02",
-            "name": "Alice Smith",
-            "email": "alice.smith@gmail.com",
-            "phone": "+1-555-0151",
+            "name": "Kavya Patel",
+            "email": "kavya.patel@demo.caresync.local",
+            "phone": "+91 98765 02002",
             "dob": date(1993, 9, 25),
             "gender": "Female",
             "blood": "A+",
-            "history": "Asthma, seasonal pollen allergy. Uses albuterol inhaler as needed."
+            "history": "Asthma, seasonal pollen allergy. Uses salbutamol inhaler as needed."
         }
     ]
 
@@ -240,7 +285,7 @@ def seed_database(db: Session):
         id=str(uuid.uuid4()),
         user_id="usr-pat-01",
         title="Appointment Confirmed",
-        message=f"Your appointment with Dr. Sarah Jenkins on {tomorrow} at 10:00 AM has been confirmed.",
+        message=f"Your appointment with Dr. Aarav Mehta on {tomorrow} at 10:00 AM has been confirmed.",
         type="confirmation"
     ))
 

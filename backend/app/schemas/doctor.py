@@ -22,7 +22,7 @@ class DoctorAvailabilityResponse(BaseModel):
 
 class DoctorCreateByAdmin(BaseModel):
     name: str = Field(..., min_length=2)
-    email: EmailStr
+    email: str
     password: str = Field(..., min_length=6)
     phone_number: Optional[str] = None
     specialization: str = Field(..., min_length=2)
