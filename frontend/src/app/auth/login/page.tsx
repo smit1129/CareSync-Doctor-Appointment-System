@@ -45,12 +45,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-gray-50">
+    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-surface hover:brightness-95 dark:hover:brightness-110">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+        <div className="bg-surface rounded-2xl shadow-xl border border-border p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-            <p className="text-gray-500 mt-2">Sign in to your CareSync account</p>
+            <h1 className="text-3xl font-bold text-foreground">Welcome Back</h1>
+            <p className="text-foreground/60 mt-2">Sign in to your CareSync account</p>
           </div>
 
           {error && (
@@ -61,30 +61,30 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">Email Address</label>
               <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-800 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-border text-foreground/90 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all"
                 placeholder="you@example.com" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">Password</label>
               <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-800 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-border text-foreground/90 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all"
                 placeholder="••••••••" />
             </div>
             <button type="submit" disabled={loading}
-              className="w-full py-3 bg-gradient-to-r from-teal-600 to-cyan-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50">
+              className="w-full py-3 bg-primary text-primary-foreground font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50">
               {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-gray-500">
+          <div className="mt-6 text-center text-sm text-foreground/60">
             Don&apos;t have an account?{" "}
             <Link href="/auth/register" className="text-teal-600 font-semibold hover:text-teal-700">Sign Up</Link>
           </div>
 
           {/* Quick Demo Logins */}
-          <div className="mt-8 pt-6 border-t border-gray-100">
+          <div className="mt-8 pt-6 border-t border-border">
             <p className="text-xs text-gray-400 text-center mb-3">Quick Demo Access</p>
             <div className="grid grid-cols-3 gap-2">
               <button onClick={() => quickLogin("smit.gamit@demo.caresync.local", "Patient@12345")}

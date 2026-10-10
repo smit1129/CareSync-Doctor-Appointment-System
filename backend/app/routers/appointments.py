@@ -115,7 +115,7 @@ def reschedule_appointment(
     if current_user.role == "patient" and old_apt.patient.user_id != current_user.id:
         raise ForbiddenException("Access denied: You can only reschedule your own appointments")
 
-    if old_apt.status not in ["Confirmed", "Payment Pending"]:
+    if old_apt.status not in ["Requested", "Confirmed", "Payment Pending"]:
         raise BadRequestException(f"Appointment cannot be rescheduled from state: {old_apt.status}")
 
     # Cancel old appointment

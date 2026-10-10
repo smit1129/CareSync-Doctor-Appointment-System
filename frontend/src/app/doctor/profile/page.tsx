@@ -132,9 +132,9 @@ export default function DoctorProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-surface hover:brightness-95 dark:hover:brightness-110 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Doctor Profile & Settings</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-6">Doctor Profile & Settings</h1>
 
         {msg && (
           <div className="mb-6 p-4 bg-teal-50 border border-teal-200 text-teal-800 rounded-xl flex justify-between">
@@ -143,36 +143,36 @@ export default function DoctorProfile() {
           </div>
         )}
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Professional Information</h2>
+        <div className="bg-surface rounded-2xl shadow-sm border border-border p-6 sm:p-8 mb-8">
+          <h2 className="text-xl font-bold text-foreground mb-6">Professional Information</h2>
           <form onSubmit={handleProfileSave} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1">Phone Number</label>
                 <input type="text" value={profile.phone_number || ""} onChange={e => setProfile({...profile, phone_number: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-teal-500 outline-none" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1">Specialization</label>
                 <input type="text" value={profile.specialization || ""} onChange={e => setProfile({...profile, specialization: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-teal-500 outline-none" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Qualification</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1">Qualification</label>
                 <input type="text" value={profile.qualification || ""} onChange={e => setProfile({...profile, qualification: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-teal-500 outline-none" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Experience (Years)</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1">Experience (Years)</label>
                 <input type="number" min="0" value={profile.experience_years || 0} onChange={e => setProfile({...profile, experience_years: parseInt(e.target.value)})} className="w-full px-4 py-2 border rounded-lg focus:ring-teal-500 outline-none" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Consultation Fee (₹)</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1">Consultation Fee (₹)</label>
                 <input type="number" min="0" value={profile.consultation_fee || 0} onChange={e => setProfile({...profile, consultation_fee: parseInt(e.target.value)})} className="w-full px-4 py-2 border rounded-lg focus:ring-teal-500 outline-none" />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Clinic Address</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1">Clinic Address</label>
                 <input type="text" value={profile.clinic_address || ""} onChange={e => setProfile({...profile, clinic_address: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-teal-500 outline-none" />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Bio (Optional)</label>
+                <label className="block text-sm font-medium text-foreground/80 mb-1">Bio (Optional)</label>
                 <textarea rows={3} value={profile.bio || ""} onChange={e => setProfile({...profile, bio: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-teal-500 outline-none" />
               </div>
             </div>
@@ -184,32 +184,32 @@ export default function DoctorProfile() {
           </form>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Availability Schedule</h2>
-          <p className="text-sm text-gray-500 mb-6">Define your working hours and slot durations.</p>
+        <div className="bg-surface rounded-2xl shadow-sm border border-border p-6 sm:p-8">
+          <h2 className="text-xl font-bold text-foreground mb-2">Availability Schedule</h2>
+          <p className="text-sm text-foreground/60 mb-6">Define your working hours and slot durations.</p>
           
           <form onSubmit={handleAvailabilitySave}>
             <div className="space-y-4">
               {availabilities.map((avail, idx) => (
-                <div key={idx} className="flex flex-col md:flex-row md:items-center gap-4 p-4 border rounded-xl hover:bg-gray-50">
+                <div key={idx} className="flex flex-col md:flex-row md:items-center gap-4 p-4 border rounded-xl hover:bg-surface hover:brightness-95 dark:hover:brightness-110">
                   <div className="w-32 flex items-center gap-3">
                     <input type="checkbox" checked={avail.is_active} onChange={e => updateAvail(idx, "is_active", e.target.checked)} className="w-5 h-5 text-teal-600 rounded" />
-                    <span className="font-semibold text-gray-700">{DAY_NAMES[avail.day_of_week]}</span>
+                    <span className="font-semibold text-foreground/80">{DAY_NAMES[avail.day_of_week]}</span>
                   </div>
                   
                   {avail.is_active ? (
                     <div className="flex-1 grid grid-cols-3 gap-3">
                       <div>
-                        <label className="block text-xs text-gray-500 mb-1">Start Time</label>
+                        <label className="block text-xs text-foreground/60 mb-1">Start Time</label>
                         <input type="time" value={avail.start_time} onChange={e => updateAvail(idx, "start_time", e.target.value)} className="w-full px-3 py-2 border rounded-lg text-sm" />
                       </div>
                       <div>
-                        <label className="block text-xs text-gray-500 mb-1">End Time</label>
+                        <label className="block text-xs text-foreground/60 mb-1">End Time</label>
                         <input type="time" value={avail.end_time} onChange={e => updateAvail(idx, "end_time", e.target.value)} className="w-full px-3 py-2 border rounded-lg text-sm" />
                       </div>
                       <div>
-                        <label className="block text-xs text-gray-500 mb-1">Slot Duration (min)</label>
-                        <select value={avail.slot_duration_minutes} onChange={e => updateAvail(idx, "slot_duration_minutes", parseInt(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm bg-white">
+                        <label className="block text-xs text-foreground/60 mb-1">Slot Duration (min)</label>
+                        <select value={avail.slot_duration_minutes} onChange={e => updateAvail(idx, "slot_duration_minutes", parseInt(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm bg-surface">
                           <option value={15}>15 mins</option>
                           <option value={20}>20 mins</option>
                           <option value={30}>30 mins</option>

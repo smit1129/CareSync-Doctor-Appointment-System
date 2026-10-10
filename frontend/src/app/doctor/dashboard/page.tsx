@@ -85,11 +85,11 @@ export default function DoctorDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-surface hover:brightness-95 dark:hover:brightness-110 py-8">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Doctor Dashboard</h1>
-          <p className="text-gray-500 mt-1">Welcome, {user?.name}</p>
+          <h1 className="text-3xl font-bold text-foreground">Doctor Dashboard</h1>
+          <p className="text-foreground/60 mt-1">Welcome, {user?.name}</p>
         </div>
 
         {msg && (
@@ -102,12 +102,12 @@ export default function DoctorDashboard() {
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           {[
-            { label: "Total", value: appointments.length, color: "bg-gray-50 text-gray-800" },
+            { label: "Total", value: appointments.length, color: "bg-surface hover:brightness-95 dark:hover:brightness-110 text-foreground/90" },
             { label: "Upcoming", value: upcoming.length, color: "bg-teal-50 text-teal-800" },
             { label: "Completed", value: appointments.filter(a => a.status === "Completed").length, color: "bg-blue-50 text-blue-800" },
             { label: "Pending", value: appointments.filter(a => ["Requested", "Pending"].includes(a.status)).length, color: "bg-purple-50 text-purple-800" },
           ].map((s) => (
-            <div key={s.label} className={`${s.color} rounded-2xl p-5 text-center border border-gray-100`}>
+            <div key={s.label} className={`${s.color} rounded-2xl p-5 text-center border border-border`}>
               <div className="text-2xl font-bold">{s.value}</div>
               <div className="text-sm opacity-70">{s.label}</div>
             </div>
@@ -116,30 +116,30 @@ export default function DoctorDashboard() {
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6">
-          <button onClick={() => setTab("upcoming")} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === "upcoming" ? "bg-teal-600 text-white" : "bg-white text-gray-600 border border-gray-200"}`}>
+          <button onClick={() => setTab("upcoming")} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === "upcoming" ? "bg-teal-600 text-white" : "bg-surface text-foreground/70 border border-border"}`}>
             Upcoming
           </button>
-          <button onClick={() => setTab("all")} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === "all" ? "bg-teal-600 text-white" : "bg-white text-gray-600 border border-gray-200"}`}>
+          <button onClick={() => setTab("all")} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === "all" ? "bg-teal-600 text-white" : "bg-surface text-foreground/70 border border-border"}`}>
             All Appointments
           </button>
         </div>
 
         {displayList.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
+          <div className="bg-surface rounded-2xl border border-border p-12 text-center">
             <div className="text-4xl mb-3">📋</div>
-            <p className="text-gray-500">No appointments to display</p>
+            <p className="text-foreground/60">No appointments to display</p>
           </div>
         ) : (
           <div className="space-y-4">
             {displayList.map((apt) => (
-              <div key={apt.id} className="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-sm transition-shadow">
+              <div key={apt.id} className="bg-surface rounded-2xl border border-border p-5 hover:shadow-sm transition-shadow">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
-                      <h3 className="font-semibold text-gray-900">{apt.patient_name}</h3>
+                      <h3 className="font-semibold text-foreground">{apt.patient_name}</h3>
                       <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${STATUS_BADGES[apt.status] || ""}`}>{apt.status}</span>
                     </div>
-                    <p className="text-sm text-gray-500">📅 {apt.appointment_date} at {apt.start_time} – {apt.end_time}</p>
+                    <p className="text-sm text-foreground/60">📅 {apt.appointment_date} at {apt.start_time} – {apt.end_time}</p>
                     {apt.reason && <p className="text-sm text-gray-400 mt-1">Reason: {apt.reason}</p>}
                   </div>
                   <div className="flex gap-2">

@@ -351,3 +351,48 @@ def test_password_reset_token_not_in_response():
     assert "reset_token" not in data, "Reset token must not be returned in API response"
     # Should contain a generic message
     assert "message" in data
+
+# ============================================================================
+# 9. RESCHEDULE REQUESTED APPOINTMENT
+# ============================================================================
+
+def test_reschedule_requested_appointment():
+    """Ensure appointments in 'Requested' status can be rescheduled by the patient."""
+    # Find a future Tuesday date
+    target_date = date.today() + timedelta(days=7)
+    while target_date.weekday() != 1:
+        target_date += timedelta(days=1)
+
+    slots_res = client.get(f"/api/doctors/{state['doctor_id']}/slots", params={"target_date": str(target_date)})
+    free_slots = [s for s in slots_res.json() if s["is_available"]]
+    assert len(free_slots) >= 2, "Need at least two free slots"
+    
+    slot1 = free_slots[0]["start_time"]
+    slot2 = free_slots[1]["start_time"]
+
+    # Book first appointment
+    res = client.post("/api/appointments/book", json={
+        "doctor_id": state["doctor_id"],
+        "appointment_date": str(target_date),
+        "start_time": slot1,
+        "reason": "Reschedule test"
+    }, headers={"Authorization": f"Bearer {state['p1_token']}"})
+    assert res.status_code == 201
+    apt_id = res.json()["id"]
+
+    # Ensure it's in 'Requested' status
+    db = SessionLocal()
+    apt = db.query(Appointment).filter(Appointment.id == apt_id).first()
+    assert apt.status == "Requested"
+    db.close()
+
+    # Attempt to reschedule to slot2
+    res_resch = client.post(f"/api/appointments/{apt_id}/reschedule", json={
+        "new_date": str(target_date),
+        "new_start_time": slot2
+    }, headers={"Authorization": f"Bearer {state['p1_token']}"})
+    assert res_resch.status_code == 200, f"Failed to reschedule 'Requested' appointment: {res_resch.text}"
+    
+    new_apt_data = res_resch.json()
+    assert new_apt_data["status"] == "Requested"
+    assert new_apt_data["start_time"] == slot2

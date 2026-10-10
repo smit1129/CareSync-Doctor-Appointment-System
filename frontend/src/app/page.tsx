@@ -66,7 +66,7 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-teal-600 via-cyan-700 to-teal-800 text-white overflow-hidden">
+      <section className="relative bg-primary text-primary-foreground overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl" />
           <div className="absolute bottom-10 right-20 w-96 h-96 bg-cyan-300 rounded-full blur-3xl" />
@@ -90,7 +90,7 @@ export default function HomePage() {
                 </Link>
               </div>
             </div>
-            
+
             {/* Hero SVG Illustration */}
             <div className="hidden lg:flex flex-1 justify-end">
               <div className="relative w-full max-w-md aspect-square bg-white/5 rounded-3xl backdrop-blur-sm border border-white/10 p-8 flex items-center justify-center shadow-2xl">
@@ -104,11 +104,11 @@ export default function HomePage() {
                   <path d="M130 130l6 6 12-12" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 {/* Floating Elements */}
-                <div className="absolute -left-6 top-12 bg-white text-teal-700 px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce shadow-black/10" style={{ animationDuration: '3s' }}>
+                <div className="absolute -left-6 top-12 bg-surface text-teal-700 dark:text-teal-400 px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce shadow-black/10" style={{ animationDuration: '3s' }}>
                   <span className="text-xl">🩺</span>
                   <div className="text-sm font-bold">Expert Doctors</div>
                 </div>
-                <div className="absolute -right-6 bottom-16 bg-white text-cyan-700 px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce shadow-black/10" style={{ animationDuration: '3.5s', animationDelay: '0.5s' }}>
+                <div className="absolute -right-6 bottom-16 bg-surface text-cyan-700 dark:text-cyan-400 px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce shadow-black/10" style={{ animationDuration: '3.5s', animationDelay: '0.5s' }}>
                   <span className="text-xl">📅</span>
                   <div className="text-sm font-bold">Easy Booking</div>
                 </div>
@@ -133,21 +133,21 @@ export default function HomePage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">How It Works</h2>
-          <p className="text-center text-gray-500 mb-12 max-w-2xl mx-auto">Book your appointment in three simple steps</p>
+          <h2 className="text-3xl font-bold text-center text-foreground mb-4">How It Works</h2>
+          <p className="text-center text-foreground/60 mb-12 max-w-2xl mx-auto">Book your appointment in three simple steps</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { step: "1", icon: "🔍", title: "Search Doctor", desc: "Browse specialists by specialization, name, or clinic location." },
               { step: "2", icon: "📅", title: "Pick a Time Slot", desc: "Choose your preferred date and available time slot from the doctor's schedule." },
               { step: "3", icon: "✅", title: "Confirm & Pay", desc: "Complete secure payment and receive instant booking confirmation." },
             ].map((item) => (
-              <div key={item.step} className="relative bg-gradient-to-b from-gray-50 to-white rounded-2xl p-8 text-center border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <div key={item.step} className="relative bg-surface rounded-2xl p-8 text-center border border-border shadow-sm hover:shadow-md transition-shadow">
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center text-sm font-bold">{item.step}</div>
                 <div className="text-4xl mb-4 mt-2">{item.icon}</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-gray-500 text-sm">{item.desc}</p>
+                <h3 className="text-lg font-semibold text-foreground mb-2">{item.title}</h3>
+                <p className="text-foreground/60 text-sm">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -155,10 +155,10 @@ export default function HomePage() {
       </section>
 
       {/* Specialization Filter + Doctors */}
-      <section className="py-16 bg-gray-50" id="doctors">
+      <section className="py-16 bg-surface" id="doctors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Our Specialists</h2>
-          <p className="text-gray-500 mb-8">Filter by specialization and find the right doctor for you</p>
+          <h2 className="text-3xl font-bold text-foreground mb-2">Our Specialists</h2>
+          <p className="text-foreground/60 mb-8">Filter by specialization and find the right doctor for you</p>
 
           {/* Search bar */}
           <div className="mb-6">
@@ -167,7 +167,7 @@ export default function HomePage() {
               placeholder="Search by doctor name or clinic..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full max-w-md px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-800 shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all"
+              className="w-full max-w-md px-4 py-3 rounded-xl border border-border bg-surface text-foreground/90 shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all"
             />
           </div>
 
@@ -175,9 +175,8 @@ export default function HomePage() {
           <div className="flex flex-wrap gap-2 mb-8">
             <button
               onClick={() => setSelectedSpec("")}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                !selectedSpec ? "bg-teal-600 text-white shadow-md" : "bg-white text-gray-600 border border-gray-200 hover:border-teal-300"
-              }`}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${!selectedSpec ? "bg-teal-600 text-white shadow-md" : "bg-surface text-foreground/70 border border-border hover:border-teal-300"
+                }`}
             >
               All
             </button>
@@ -185,9 +184,8 @@ export default function HomePage() {
               <button
                 key={spec}
                 onClick={() => setSelectedSpec(selectedSpec === spec ? "" : spec)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  selectedSpec === spec ? "bg-teal-600 text-white shadow-md" : "bg-white text-gray-600 border border-gray-200 hover:border-teal-300"
-                }`}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${selectedSpec === spec ? "bg-teal-600 text-white shadow-md" : "bg-surface text-foreground/70 border border-border hover:border-teal-300"
+                  }`}
               >
                 {SPECIALIZATIONS_ICONS[spec] || "🏥"} {spec}
               </button>
@@ -198,7 +196,7 @@ export default function HomePage() {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <div key={i} className="bg-surface rounded-2xl p-6 shadow-sm border border-border">
                   <div className="skeleton h-6 w-3/4 mb-3" />
                   <div className="skeleton h-4 w-1/2 mb-2" />
                   <div className="skeleton h-4 w-full mb-2" />
@@ -207,51 +205,51 @@ export default function HomePage() {
               ))}
             </div>
           ) : doctors.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+            <div className="text-center py-16 bg-surface rounded-2xl border border-border">
               <div className="text-5xl mb-4">🔍</div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">No doctors found</h3>
+              <h3 className="text-xl font-semibold text-foreground/80 mb-2">No doctors found</h3>
               <p className="text-gray-400">Try adjusting your search or specialization filter.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {doctors.map((doc) => (
-                <div key={doc.id} className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:border-teal-200 transition-all flex flex-col h-full">
+                <div key={doc.id} className="group bg-surface rounded-2xl p-6 shadow-sm border border-border hover:shadow-lg hover:border-teal-200 transition-all flex flex-col h-full">
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-full flex items-center justify-center text-white text-xl font-bold shrink-0 shadow-inner relative">
+                    <div className="w-14 h-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xl font-bold shrink-0 shadow-inner relative">
                       {doc.name.charAt(4) || "D"}
-                      <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5" title="Verified Professional">
+                      <div className="absolute -bottom-1 -right-1 bg-surface rounded-full p-0.5" title="Verified Professional">
                         <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
                       </div>
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-bold text-gray-900 group-hover:text-teal-700 transition-colors line-clamp-1">{doc.name}</h3>
+                      <h3 className="text-lg font-bold text-foreground group-hover:text-teal-700 transition-colors line-clamp-1">{doc.name}</h3>
                       <p className="text-sm text-teal-600 font-medium">{doc.specialization}</p>
                     </div>
-                    <div className="flex items-center gap-1 bg-amber-50 px-2.5 py-1 rounded-lg shrink-0 border border-amber-100">
-                      <span className="text-amber-500 text-sm">★</span>
-                      <span className="text-sm font-semibold text-amber-700">{doc.rating_avg}</span>
+                    <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-900/30 px-2.5 py-1 rounded-lg shrink-0 border border-amber-100 dark:border-amber-900/50">
+                      <span className="text-amber-500 dark:text-amber-400 text-sm">★</span>
+                      <span className="text-sm font-semibold text-amber-700 dark:text-amber-400">{doc.rating_avg}</span>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2 mb-6 flex-1">
-                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                    <p className="text-sm text-foreground/70 flex items-center gap-2">
                       <span className="text-gray-400">🎓</span> {doc.qualification}
                     </p>
-                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                    <p className="text-sm text-foreground/70 flex items-center gap-2">
                       <span className="text-gray-400">⏱️</span> {doc.experience_years} years experience
                     </p>
-                    <p className="text-sm text-gray-600 flex items-center gap-2 line-clamp-1">
+                    <p className="text-sm text-foreground/70 flex items-center gap-2 line-clamp-1">
                       <span className="text-gray-400">📍</span> {doc.clinic_address}
                     </p>
                   </div>
-                  
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100 mb-4">
-                    <span className="text-sm text-gray-500">Consultation Fee</span>
-                    <span className="text-lg font-bold text-gray-900">₹{doc.consultation_fee}</span>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-border mb-4">
+                    <span className="text-sm text-foreground/60">Consultation Fee</span>
+                    <span className="text-lg font-bold text-foreground">₹{doc.consultation_fee}</span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 mt-auto">
-                    <Link href={`/doctors/${doc.id}`} className="py-2.5 px-2 text-center rounded-xl text-teal-700 font-medium bg-teal-50 hover:bg-teal-100 transition-colors text-sm">
+                    <Link href={`/doctors/${doc.id}`} className="py-2.5 px-2 text-center rounded-xl text-teal-700 dark:text-teal-400 font-medium bg-teal-50 dark:bg-teal-900/30 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors text-sm">
                       View Profile
                     </Link>
                     <Link href={`/doctors/${doc.id}`} className="py-2.5 px-2 text-center rounded-xl text-white font-medium bg-teal-600 hover:bg-teal-700 shadow-sm transition-colors text-sm">
@@ -266,10 +264,10 @@ export default function HomePage() {
       </section>
 
       {/* Demo Accounts */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">Quick Demo Access</h2>
-          <p className="text-center text-gray-500 mb-8">Use these accounts to explore the system</p>
+          <h2 className="text-3xl font-bold text-center text-foreground mb-4">Quick Demo Access</h2>
+          <p className="text-center text-foreground/60 mb-8">Use these accounts to explore the system</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {[
               { role: "Patient", desc: "Explore patient appointment features", email: "smit.gamit@demo.caresync.local", pass: "Patient@12345", color: "from-emerald-500 to-teal-600", icon: "👤" },
@@ -280,8 +278,8 @@ export default function HomePage() {
                 <div className="text-4xl mb-4">{demo.icon}</div>
                 <h3 className="text-xl font-bold mb-2">{demo.role} Account</h3>
                 <p className="text-sm text-white/80 mb-6 flex-1">{demo.desc}</p>
-                
-                <button 
+
+                <button
                   onClick={() => handleDemoLogin(demo.email, demo.pass)}
                   disabled={loginLoading}
                   className="w-full bg-white/20 hover:bg-white/30 backdrop-blur py-3 px-4 rounded-xl text-sm font-semibold transition-all border border-white/20 shadow-sm disabled:opacity-50"
