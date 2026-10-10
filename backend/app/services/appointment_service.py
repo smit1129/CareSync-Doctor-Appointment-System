@@ -46,7 +46,7 @@ class AppointmentService:
         booked_appointments = db.query(Appointment).filter(
             Appointment.doctor_id == doctor_id,
             Appointment.appointment_date == target_date,
-            Appointment.status.notin_(["Cancelled", "Rejected"])
+            Appointment.status.notin_(["Cancelled", "Rejected", "Rescheduled"])
         ).all()
 
         booked_start_times = {apt.start_time.strftime("%H:%M") for apt in booked_appointments}
@@ -121,12 +121,12 @@ class AppointmentService:
             Appointment.doctor_id == doctor_id,
             Appointment.appointment_date == appointment_date,
             Appointment.start_time == parsed_start,
-            Appointment.status.notin_(["Cancelled", "Rejected"])
+            Appointment.status.notin_(["Cancelled", "Rejected", "Rescheduled"])
         ).with_for_update(nowait=False).first() if db.bind.name == "postgresql" else db.query(Appointment).filter(
             Appointment.doctor_id == doctor_id,
             Appointment.appointment_date == appointment_date,
             Appointment.start_time == parsed_start,
-            Appointment.status.notin_(["Cancelled", "Rejected"])
+            Appointment.status.notin_(["Cancelled", "Rejected", "Rescheduled"])
         ).first()
 
         if existing_appointment:
@@ -183,7 +183,7 @@ class AppointmentService:
     ) -> Appointment:
         """
         Cancel an appointment, freeing the slot (TC_11).
-        Triggers refund if already paid (TC_17).
+        Refunds are handled separately through the authorized refund flow (TC_17).
         """
         appointment = db.query(Appointment).filter(Appointment.id == appointment_id).first()
         if not appointment:
@@ -203,11 +203,6 @@ class AppointmentService:
         appointment.status = "Cancelled"
         appointment.cancellation_reason = cancellation_reason
 
-        # Check for completed payment to initiate refund (TC_17)
-        if appointment.payment and appointment.payment.status == "completed":
-            appointment.payment.status = "refunded"
-            appointment.payment.refund_amount = appointment.payment.amount
-            appointment.payment.refund_status = "refunded"
 
         # Send notifications
         patient_user_id = appointment.patient.user_id
@@ -217,7 +212,7 @@ class AppointmentService:
             id=str(uuid.uuid4()),
             user_id=patient_user_id,
             title="Appointment Cancelled",
-            message=f"Your appointment on {appointment.appointment_date} has been cancelled. If paid, your refund has been processed.",
+            message=f"Your appointment on {appointment.appointment_date} has been cancelled. If you have already paid, please follow the refund process.",
             type="status_change"
         ))
 
