@@ -3,13 +3,47 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  /* CareSync Light Theme: Warm off-white background, deep forest green branding, refined teal accents */
+  --background: #fbfaf8;
+  --foreground: #0f1f18;
+  --surface: #ffffff;
+  --surface-subtle: #f4f7f5;
+  --primary: #123e2e;
+  --primary-foreground: #ffffff;
+  --accent: #0d9488;
+  --accent-foreground: #ffffff;
+  --border: #e2e8e5;
+  --muted: #52665e;
+  --muted-foreground: #52665e;
+}
+
+.dark {
+  /* CareSync Dark Theme: Deep charcoal background, elevated dark surfaces, comfortable off-white text */
+  --background: #0d1514;
+  --foreground: #f1f5f3;
+  --surface: #152220;
+  --surface-subtle: #1a2b28;
+  --primary: #1c5943;
+  --primary-foreground: #ffffff;
+  --accent: #2dd4bf;
+  --accent-foreground: #0d1514;
+  --border: #253834;
+  --muted: #9ab3aa;
+  --muted-foreground: #9ab3aa;
 }
 
 body {
@@ -28,6 +62,10 @@ html {
 ::-webkit-scrollbar-track { background: #f1f5f9; }
 ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+.dark ::-webkit-scrollbar-track { background: #0d1514; }
+.dark ::-webkit-scrollbar-thumb { background: #253834; }
+.dark ::-webkit-scrollbar-thumb:hover { background: #354e49; }
 
 /* Toast animations */
 @keyframes slideIn {
@@ -56,6 +94,11 @@ html {
   border-radius: 0.5rem;
 }
 
+.dark .skeleton {
+  background: linear-gradient(90deg, #152220 25%, #1d2e2b 50%, #152220 75%);
+  background-size: 200% 100%;
+}
+
 /* Status badge colors */
 .badge-confirmed { background: #dcfce7; color: #166534; }
 .badge-completed { background: #dbeafe; color: #1e40af; }
@@ -63,3 +106,10 @@ html {
 .badge-rejected { background: #fef3c7; color: #92400e; }
 .badge-requested { background: #f3e8ff; color: #6b21a8; }
 .badge-rescheduled { background: #e0f2fe; color: #075985; }
+
+.dark .badge-confirmed { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+.dark .badge-completed { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+.dark .badge-cancelled { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+.dark .badge-rejected { background: rgba(245, 158, 11, 0.2); color: #fde68a; }
+.dark .badge-requested { background: rgba(168, 85, 247, 0.2); color: #d8b4fe; }
+.dark .badge-rescheduled { background: rgba(14, 165, 233, 0.2); color: #7dd3fc; }

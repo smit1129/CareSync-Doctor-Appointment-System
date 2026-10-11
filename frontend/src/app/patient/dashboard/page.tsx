@@ -202,14 +202,14 @@ export default function PatientDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-surface hover:brightness-95 dark:hover:brightness-110 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Patient Dashboard</h1>
-            <p className="text-foreground/60">Welcome back, {user?.name}</p>
+            <p className="text-muted-foreground mt-1">Welcome back, {user?.name}</p>
           </div>
-          <Link href="/doctors" className="px-5 py-2.5 bg-teal-600 text-white font-semibold rounded-xl hover:bg-teal-700 transition-colors shadow">
+          <Link href="/doctors" className="px-5 py-2.5 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-sm">
             + Book Appointment
           </Link>
         </div>
@@ -217,10 +217,10 @@ export default function PatientDashboard() {
         {msg && (
           <div className={`mb-6 p-4 rounded-xl text-sm flex items-center justify-between border ${
             msgType === "success"
-              ? "bg-teal-50 border-teal-200 text-teal-800"
-              : "bg-red-50 border-red-200 text-red-700"
+              ? "bg-teal-50 dark:bg-teal-950/50 border-teal-300 dark:border-teal-800 text-teal-900 dark:text-teal-200 font-medium"
+              : "bg-rose-50 dark:bg-rose-950/50 border-rose-300 dark:border-rose-800 text-rose-900 dark:text-rose-200 font-medium"
           }`}>
-            {msg}
+            <span>{msg}</span>
             <button onClick={() => setMsg("")} className="ml-4 font-bold opacity-60 hover:opacity-100">✕</button>
           </div>
         )}
@@ -231,13 +231,13 @@ export default function PatientDashboard() {
           {upcoming.length === 0 ? (
             <div className="bg-surface rounded-2xl border border-border p-8 text-center">
               <div className="text-4xl mb-3">📅</div>
-              <p className="text-foreground/60">No upcoming appointments</p>
-              <Link href="/doctors" className="inline-block mt-4 text-teal-600 font-semibold hover:text-teal-700">Find a Doctor →</Link>
+              <p className="text-muted-foreground">No upcoming appointments</p>
+              <Link href="/doctors" className="inline-block mt-4 text-accent font-semibold hover:underline">Find a Doctor →</Link>
             </div>
           ) : (
             <div className="space-y-4">
               {upcoming.map((apt) => (
-                <div key={apt.id} className="bg-surface rounded-2xl border border-border p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:shadow-sm transition-shadow">
+                <div key={apt.id} className="bg-surface rounded-2xl border border-border p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:shadow-md transition-shadow">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
                       <h3 className="font-semibold text-foreground">{apt.doctor_name}</h3>
@@ -245,15 +245,15 @@ export default function PatientDashboard() {
                         {getStatusText(apt.status)}
                       </span>
                     </div>
-                    <p className="text-sm text-teal-600">{apt.doctor_specialization}</p>
-                    <p className="text-sm text-foreground/60 mt-1">📅 {apt.appointment_date} at {apt.start_time} – {apt.end_time}</p>
-                    {apt.reason && <p className="text-sm text-gray-400 mt-1">Reason: {apt.reason}</p>}
+                    <p className="text-sm text-accent font-medium">{apt.doctor_specialization}</p>
+                    <p className="text-sm text-muted-foreground mt-1">📅 {apt.appointment_date} at {apt.start_time} – {apt.end_time}</p>
+                    {apt.reason && <p className="text-sm text-muted-foreground mt-1">Reason: {apt.reason}</p>}
                   </div>
                   <div className="flex gap-2 shrink-0">
                     {rescheduleEligible(apt) && (
                       <button
                         onClick={() => openReschedule(apt)}
-                        className="px-4 py-2 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-100 transition-colors"
+                        className="px-4 py-2 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/70 text-blue-800 dark:text-blue-200 border border-blue-300 dark:border-blue-700 text-sm font-semibold rounded-lg transition-colors focus:ring-2 focus:ring-blue-400 focus:outline-none"
                       >
                         🔄 Reschedule
                       </button>
@@ -261,7 +261,7 @@ export default function PatientDashboard() {
                     {apt.status === "Payment Pending" && (
                       <button
                         onClick={() => setPayApt(apt)}
-                        className="px-4 py-2 bg-green-50 text-green-700 text-sm font-medium rounded-lg hover:bg-green-100 transition-colors shadow-sm"
+                        className="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/70 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700 text-sm font-semibold rounded-lg transition-colors shadow-xs focus:ring-2 focus:ring-emerald-400 focus:outline-none"
                       >
                         💳 Complete Payment
                       </button>
@@ -269,7 +269,7 @@ export default function PatientDashboard() {
                     <button
                       onClick={() => handleCancel(apt.id)}
                       disabled={cancellingId === apt.id}
-                      className="px-4 py-2 bg-red-50 text-red-600 text-sm font-medium rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
+                      className="px-4 py-2 bg-red-50 hover:bg-red-100 dark:bg-red-950/60 dark:hover:bg-red-900/70 text-red-800 dark:text-red-200 border border-red-300 dark:border-red-700 text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-red-400 focus:outline-none"
                     >
                       {cancellingId === apt.id ? "Cancelling..." : "Cancel"}
                     </button>
@@ -284,26 +284,26 @@ export default function PatientDashboard() {
         <div>
           <h2 className="text-xl font-bold text-foreground mb-4">Past Appointments ({past.length})</h2>
           {past.length === 0 ? (
-            <div className="bg-surface rounded-2xl border border-border p-8 text-center text-gray-400">No past appointments</div>
+            <div className="bg-surface rounded-2xl border border-border p-8 text-center text-muted-foreground">No past appointments</div>
           ) : (
             <div className="space-y-3">
               {past.map((apt) => (
                 <div key={apt.id} className="bg-surface rounded-xl border border-border p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium text-foreground/90">{apt.doctor_name}</h4>
+                      <h4 className="font-medium text-foreground">{apt.doctor_name}</h4>
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_BADGES[apt.status] || ""}`}>
                         {getStatusText(apt.status)}
                       </span>
                     </div>
-                    <p className="text-xs text-foreground/60">{apt.appointment_date} at {apt.start_time} • {apt.doctor_specialization}</p>
+                    <p className="text-xs text-muted-foreground">{apt.appointment_date} at {apt.start_time} • {apt.doctor_specialization}</p>
                     {apt.cancellation_reason && (
-                      <p className="text-xs text-gray-400 mt-0.5">Reason: {apt.cancellation_reason}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">Reason: {apt.cancellation_reason}</p>
                     )}
                   </div>
                   {apt.status === "Completed" && !feedbackDone.has(apt.id) && (
                     <button onClick={() => setFeedbackAptId(apt.id)}
-                      className="px-4 py-2 bg-amber-50 text-amber-700 text-sm font-medium rounded-lg hover:bg-amber-100 transition-colors">
+                      className="px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 text-sm font-semibold rounded-lg transition-colors focus:ring-2 focus:ring-amber-400 focus:outline-none dark:bg-amber-950/60 dark:hover:bg-amber-900/70 dark:text-amber-200 dark:border-amber-700">
                       ⭐ Rate
                     </button>
                   )}
@@ -315,20 +315,20 @@ export default function PatientDashboard() {
 
         {/* Feedback Modal */}
         {feedbackAptId && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-surface rounded-2xl shadow-2xl max-w-md w-full p-6">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+            <div className="bg-surface rounded-2xl shadow-2xl max-w-md w-full p-6 border border-border">
               <h3 className="text-xl font-bold text-foreground mb-4">Rate Your Experience</h3>
               <div className="flex gap-2 mb-4">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <button key={star} onClick={() => setRating(star)} className={`text-3xl transition-colors ${star <= rating ? "text-amber-400" : "text-gray-200"}`}>★</button>
+                  <button key={star} onClick={() => setRating(star)} className={`text-3xl transition-colors ${star <= rating ? "text-amber-400" : "text-border"}`}>★</button>
                 ))}
               </div>
               <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={3} placeholder="Share your experience..."
-                className="w-full px-4 py-3 rounded-xl border border-border text-foreground/90 focus:ring-2 focus:ring-teal-500 outline-none mb-4" />
+                className="w-full px-4 py-3 rounded-xl border border-border bg-surface text-foreground focus:ring-2 focus:ring-accent outline-none mb-4" />
               <div className="flex gap-3">
-                <button onClick={() => setFeedbackAptId("")} className="flex-1 py-2.5 border border-border text-foreground/70 rounded-xl hover:bg-surface hover:brightness-95 dark:hover:brightness-110 font-medium">Cancel</button>
+                <button onClick={() => setFeedbackAptId("")} className="flex-1 py-2.5 border border-border text-foreground/70 rounded-xl hover:bg-surface-subtle font-medium">Cancel</button>
                 <button onClick={handleFeedback} disabled={feedbackSubmitting}
-                  className="flex-1 py-2.5 bg-teal-600 text-white rounded-xl hover:bg-teal-700 font-semibold disabled:opacity-50">
+                  className="flex-1 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 font-semibold disabled:opacity-50 transition-colors">
                   {feedbackSubmitting ? "Submitting..." : "Submit Review"}
                 </button>
               </div>
@@ -338,17 +338,17 @@ export default function PatientDashboard() {
 
         {/* Reschedule Modal */}
         {rescheduleApt && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-surface rounded-2xl shadow-2xl max-w-md w-full p-6">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+            <div className="bg-surface rounded-2xl shadow-2xl max-w-md w-full p-6 border border-border">
               <div className="flex items-center justify-between mb-5">
                 <h3 className="text-xl font-bold text-foreground">Reschedule Appointment</h3>
-                <button onClick={closeReschedule} className="text-gray-400 hover:text-foreground/70 text-xl font-bold">✕</button>
+                <button onClick={closeReschedule} className="text-muted-foreground hover:text-foreground text-xl font-bold">✕</button>
               </div>
 
-              <div className="bg-surface hover:brightness-95 dark:hover:brightness-110 rounded-xl p-4 mb-5 text-sm">
-                <p className="font-semibold text-foreground/90">{rescheduleApt.doctor_name}</p>
-                <p className="text-teal-600">{rescheduleApt.doctor_specialization}</p>
-                <p className="text-foreground/60 mt-1">Current: {rescheduleApt.appointment_date} at {rescheduleApt.start_time}</p>
+              <div className="bg-surface-subtle border border-border rounded-xl p-4 mb-5 text-sm">
+                <p className="font-semibold text-foreground">{rescheduleApt.doctor_name}</p>
+                <p className="text-accent font-medium">{rescheduleApt.doctor_specialization}</p>
+                <p className="text-muted-foreground mt-1">Current: {rescheduleApt.appointment_date} at {rescheduleApt.start_time}</p>
               </div>
 
               <div className="mb-4">
@@ -358,7 +358,7 @@ export default function PatientDashboard() {
                   min={todayStr}
                   value={newDate}
                   onChange={(e) => handleNewDateChange(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-border text-foreground/90 focus:ring-2 focus:ring-teal-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-border bg-surface text-foreground focus:ring-2 focus:ring-accent outline-none"
                 />
               </div>
 
@@ -366,9 +366,9 @@ export default function PatientDashboard() {
                 <div className="mb-5">
                   <label className="block text-sm font-medium text-foreground/80 mb-2">Available Time Slots</label>
                   {slotsLoading ? (
-                    <div className="text-center py-4 text-gray-400 text-sm">Loading slots...</div>
+                    <div className="text-center py-4 text-muted-foreground text-sm">Loading slots...</div>
                   ) : slots.length === 0 ? (
-                    <div className="text-center py-4 text-gray-400 text-sm bg-surface hover:brightness-95 dark:hover:brightness-110 rounded-xl">
+                    <div className="text-center py-4 text-muted-foreground text-sm bg-surface-subtle border border-border rounded-xl">
                       No available slots on this date. Please choose a different day.
                     </div>
                   ) : (
@@ -378,12 +378,12 @@ export default function PatientDashboard() {
                           key={slot.start_time}
                           disabled={!slot.is_available}
                           onClick={() => setSelectedSlot(slot.start_time)}
-                          className={`py-2 px-1 text-xs font-medium rounded-lg text-center transition-all ${
+                          className={`py-2 px-1 text-xs rounded-lg text-center transition-all ${
                             !slot.is_available
-                              ? "bg-surface brightness-95 dark:brightness-125 text-gray-400 cursor-not-allowed line-through"
+                              ? "bg-surface-subtle text-muted-foreground/40 border border-border/60 cursor-not-allowed line-through font-normal"
                               : selectedSlot === slot.start_time
-                              ? "bg-teal-600 text-white shadow-md"
-                              : "bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200"
+                              ? "bg-primary text-primary-foreground shadow-sm font-bold border border-primary"
+                              : "bg-teal-50/70 hover:bg-teal-100/90 dark:bg-surface dark:hover:bg-surface-subtle border border-teal-200/80 dark:border-border text-teal-950 dark:text-foreground font-semibold"
                           }`}
                         >
                           {slot.start_time}
@@ -395,13 +395,13 @@ export default function PatientDashboard() {
               )}
 
               <div className="flex gap-3">
-                <button onClick={closeReschedule} className="flex-1 py-2.5 border border-border text-foreground/70 rounded-xl hover:bg-surface hover:brightness-95 dark:hover:brightness-110 font-medium">
+                <button onClick={closeReschedule} className="flex-1 py-2.5 border border-border text-foreground/70 rounded-xl hover:bg-surface-subtle font-medium">
                   Cancel
                 </button>
                 <button
                   onClick={handleReschedule}
                   disabled={!newDate || !selectedSlot || rescheduling}
-                  className="flex-1 py-2.5 bg-teal-600 text-white rounded-xl hover:bg-teal-700 font-semibold disabled:opacity-50 transition-colors"
+                  className="flex-1 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 font-semibold disabled:opacity-50 transition-colors"
                 >
                   {rescheduling ? "Rescheduling..." : "Confirm Reschedule"}
                 </button>
@@ -412,16 +412,16 @@ export default function PatientDashboard() {
 
         {/* Payment Modal */}
         {payApt && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-surface rounded-2xl shadow-2xl max-w-md w-full p-6">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+            <div className="bg-surface rounded-2xl shadow-2xl max-w-md w-full p-6 border border-border">
               <div className="flex items-center justify-between mb-5">
                 <h3 className="text-xl font-bold text-foreground">Complete Payment</h3>
-                <button onClick={() => setPayApt(null)} className="text-gray-400 hover:text-foreground/70 text-xl font-bold">✕</button>
+                <button onClick={() => setPayApt(null)} className="text-muted-foreground hover:text-foreground text-xl font-bold">✕</button>
               </div>
 
-              <div className="bg-surface hover:brightness-95 dark:hover:brightness-110 rounded-xl p-4 mb-5 text-sm text-center">
-                <p className="font-semibold text-foreground/90 mb-1">Appointment with {payApt.doctor_name}</p>
-                <p className="text-foreground/60">{payApt.appointment_date} at {payApt.start_time}</p>
+              <div className="bg-surface-subtle border border-border rounded-xl p-4 mb-5 text-sm text-center">
+                <p className="font-semibold text-foreground mb-1">Appointment with {payApt.doctor_name}</p>
+                <p className="text-muted-foreground">{payApt.appointment_date} at {payApt.start_time}</p>
                 <div className="mt-3 text-2xl font-bold text-foreground">₹500</div>
               </div>
 
@@ -434,7 +434,7 @@ export default function PatientDashboard() {
                     { key: "netbanking", label: "🏦 Net" },
                   ].map(m => (
                     <button key={m.key} onClick={() => setPaymentMode(m.key)}
-                      className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all ${paymentMode === m.key ? "bg-teal-50 border-2 border-teal-500 text-teal-700" : "bg-surface hover:brightness-95 dark:hover:brightness-110 border border-border text-foreground/70 hover:border-teal-300"}`}>
+                      className={`flex-1 py-2.5 rounded-xl text-sm transition-all ${paymentMode === m.key ? "bg-teal-50/90 dark:bg-accent/15 border-2 border-teal-600 dark:border-accent text-teal-950 dark:text-accent font-semibold" : "bg-surface hover:bg-surface-subtle border border-border text-foreground/80 hover:border-teal-400 font-medium"}`}>
                       {m.label}
                     </button>
                   ))}
@@ -442,13 +442,13 @@ export default function PatientDashboard() {
               </div>
 
               <div className="flex gap-3">
-                <button onClick={() => setPayApt(null)} className="flex-1 py-3 border border-border text-foreground/70 rounded-xl hover:bg-surface hover:brightness-95 dark:hover:brightness-110 font-medium">
+                <button onClick={() => setPayApt(null)} className="flex-1 py-3 border border-border text-foreground/70 rounded-xl hover:bg-surface-subtle font-medium">
                   Cancel
                 </button>
                 <button
                   onClick={handlePayment}
                   disabled={paying}
-                  className="flex-1 py-3 bg-primary text-primary-foreground rounded-xl hover:shadow-lg font-semibold disabled:opacity-50 transition-all"
+                  className="flex-1 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 font-semibold disabled:opacity-50 transition-all shadow-md"
                 >
                   {paying ? "Processing..." : "Pay Securely"}
                 </button>

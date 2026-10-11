@@ -85,41 +85,41 @@ export default function DoctorDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-surface hover:brightness-95 dark:hover:brightness-110 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground">Doctor Dashboard</h1>
-          <p className="text-foreground/60 mt-1">Welcome, {user?.name}</p>
+          <p className="text-muted-foreground mt-1">Welcome, {user?.name}</p>
         </div>
 
         {msg && (
-          <div className="mb-6 p-4 bg-teal-50 border border-teal-200 rounded-xl text-teal-800 text-sm flex justify-between">
-            {msg}
-            <button onClick={() => setMsg("")} className="text-teal-600">✕</button>
+          <div className="mb-6 p-4 bg-teal-50/90 dark:bg-teal-950/40 border border-teal-300/80 dark:border-teal-800 rounded-xl text-teal-950 dark:text-teal-200 text-sm font-medium flex items-center justify-between shadow-xs">
+            <span>{msg}</span>
+            <button onClick={() => setMsg("")} className="text-teal-900 dark:text-teal-300 font-bold ml-4">✕</button>
           </div>
         )}
 
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           {[
-            { label: "Total", value: appointments.length, color: "bg-surface hover:brightness-95 dark:hover:brightness-110 text-foreground/90" },
-            { label: "Upcoming", value: upcoming.length, color: "bg-teal-50 text-teal-800" },
-            { label: "Completed", value: appointments.filter(a => a.status === "Completed").length, color: "bg-blue-50 text-blue-800" },
-            { label: "Pending", value: appointments.filter(a => ["Requested", "Pending"].includes(a.status)).length, color: "bg-purple-50 text-purple-800" },
+            { label: "Total", value: appointments.length, cardStyle: "bg-surface text-foreground border-border", labelStyle: "text-muted-foreground" },
+            { label: "Upcoming", value: upcoming.length, cardStyle: "bg-teal-100/70 dark:bg-teal-950/40 text-teal-950 dark:text-teal-100 border-teal-300 dark:border-teal-800/60", labelStyle: "text-teal-900 font-bold dark:text-teal-300" },
+            { label: "Completed", value: appointments.filter(a => a.status === "Completed").length, cardStyle: "bg-blue-100/70 dark:bg-blue-950/40 text-blue-950 dark:text-blue-100 border-blue-300 dark:border-blue-800/60", labelStyle: "text-blue-900 font-bold dark:text-blue-300" },
+            { label: "Pending", value: appointments.filter(a => ["Requested", "Pending"].includes(a.status)).length, cardStyle: "bg-purple-100/70 dark:bg-purple-950/40 text-purple-950 dark:text-purple-100 border-purple-300 dark:border-purple-800/60", labelStyle: "text-purple-900 font-bold dark:text-purple-300" },
           ].map((s) => (
-            <div key={s.label} className={`${s.color} rounded-2xl p-5 text-center border border-border`}>
+            <div key={s.label} className={`${s.cardStyle} rounded-2xl p-5 text-center border shadow-xs`}>
               <div className="text-2xl font-bold">{s.value}</div>
-              <div className="text-sm opacity-70">{s.label}</div>
+              <div className={`text-xs uppercase tracking-wider mt-1 ${s.labelStyle}`}>{s.label}</div>
             </div>
           ))}
         </div>
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6">
-          <button onClick={() => setTab("upcoming")} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === "upcoming" ? "bg-teal-600 text-white" : "bg-surface text-foreground/70 border border-border"}`}>
+          <button onClick={() => setTab("upcoming")} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === "upcoming" ? "bg-primary text-primary-foreground shadow-sm" : "bg-surface text-foreground/70 border border-border hover:bg-surface-subtle"}`}>
             Upcoming
           </button>
-          <button onClick={() => setTab("all")} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === "all" ? "bg-teal-600 text-white" : "bg-surface text-foreground/70 border border-border"}`}>
+          <button onClick={() => setTab("all")} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === "all" ? "bg-primary text-primary-foreground shadow-sm" : "bg-surface text-foreground/70 border border-border hover:bg-surface-subtle"}`}>
             All Appointments
           </button>
         </div>
@@ -127,40 +127,42 @@ export default function DoctorDashboard() {
         {displayList.length === 0 ? (
           <div className="bg-surface rounded-2xl border border-border p-12 text-center">
             <div className="text-4xl mb-3">📋</div>
-            <p className="text-foreground/60">No appointments to display</p>
+            <p className="text-muted-foreground">No appointments to display</p>
           </div>
         ) : (
           <div className="space-y-4">
             {displayList.map((apt) => (
-              <div key={apt.id} className="bg-surface rounded-2xl border border-border p-5 hover:shadow-sm transition-shadow">
+              <div key={apt.id} className="bg-surface rounded-2xl border border-border p-5 hover:shadow-md transition-shadow">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
                       <h3 className="font-semibold text-foreground">{apt.patient_name}</h3>
                       <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${STATUS_BADGES[apt.status] || ""}`}>{apt.status}</span>
                     </div>
-                    <p className="text-sm text-foreground/60">📅 {apt.appointment_date} at {apt.start_time} – {apt.end_time}</p>
-                    {apt.reason && <p className="text-sm text-gray-400 mt-1">Reason: {apt.reason}</p>}
+                    <p className="text-sm text-muted-foreground">📅 {apt.appointment_date} at {apt.start_time} – {apt.end_time}</p>
+                    {apt.reason && <p className="text-sm text-muted-foreground mt-1">Reason: {apt.reason}</p>}
                   </div>
                   <div className="flex gap-2">
                     {["Requested", "Pending"].includes(apt.status) && (
                       <>
                         <button onClick={() => handleAction(apt.id, "Accept")} disabled={actionId === apt.id}
-                          className="px-4 py-2 bg-green-50 text-green-700 text-sm font-medium rounded-lg hover:bg-green-100 transition-colors disabled:opacity-50">
+                          className="px-4 py-2 bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-950/50 dark:hover:bg-emerald-900/60 text-emerald-950 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700 text-sm font-semibold rounded-lg transition-colors disabled:opacity-50">
                           Accept
                         </button>
                         <button onClick={() => handleAction(apt.id, "Reject")} disabled={actionId === apt.id}
-                          className="px-4 py-2 bg-red-50 text-red-600 text-sm font-medium rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50">
+                          className="px-4 py-2 bg-red-100 hover:bg-red-200 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 text-red-950 dark:text-rose-200 border border-red-300 dark:border-rose-700 text-sm font-semibold rounded-lg transition-colors disabled:opacity-50">
                           Reject
                         </button>
                       </>
                     )}
                     {apt.status === "Payment Pending" && (
-                      <span className="text-sm font-medium text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg">Awaiting patient payment</span>
+                      <span className="text-xs font-bold text-amber-950 dark:text-amber-200 bg-amber-100/90 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-700 px-3 py-1.5 rounded-lg inline-flex items-center">
+                        ⏳ Awaiting patient payment
+                      </span>
                     )}
                     {apt.status === "Confirmed" && (
                       <button onClick={() => handleComplete(apt.id)} disabled={actionId === apt.id}
-                        className="px-4 py-2 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-100 transition-colors disabled:opacity-50">
+                        className="px-4 py-2 bg-blue-100 hover:bg-blue-200 dark:bg-blue-950/50 dark:hover:bg-blue-900/60 text-blue-950 dark:text-blue-200 border border-blue-300 dark:border-blue-700 text-sm font-semibold rounded-lg transition-colors disabled:opacity-50">
                         Mark Complete
                       </button>
                     )}

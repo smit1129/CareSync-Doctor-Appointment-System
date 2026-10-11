@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { doctorsAPI, appointmentsAPI, paymentsAPI, feedbackAPI, DoctorInfo, TimeSlot, FeedbackInfo } from "@/lib/api";
+import { doctorsAPI, appointmentsAPI, feedbackAPI, DoctorInfo, TimeSlot, FeedbackInfo } from "@/lib/api";
 
 const DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -23,7 +23,6 @@ export default function DoctorDetailPage() {
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [bookingStatus, setBookingStatus] = useState<"idle" | "booking" | "paying" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [paymentMode, setPaymentMode] = useState("card");
 
   // Generate next 14 days
   const dateOptions = React.useMemo(() => {
@@ -95,7 +94,7 @@ export default function DoctorDetailPage() {
     setBookingStatus("booking");
     setErrorMsg("");
     try {
-      const apt = await appointmentsAPI.book(token, {
+      await appointmentsAPI.book(token, {
         doctor_id: doctorId,
         appointment_date: selectedDate,
         start_time: selectedSlot,
@@ -131,25 +130,25 @@ export default function DoctorDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface hover:brightness-95 dark:hover:brightness-110 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Doctor Profile Card */}
         <div className="bg-surface rounded-2xl shadow-sm border border-border p-6 sm:p-8 mb-8">
           <div className="flex flex-col sm:flex-row gap-6">
             <div className="w-20 h-20 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center text-white text-2xl font-bold shrink-0">
-              {doctor.name.charAt(4) || "D"}
+              {doctor.name.replace(/^Dr\.?\s*/i, "").charAt(0) || "D"}
             </div>
             <div className="flex-1">
               <h1 className="text-2xl font-bold text-foreground">{doctor.name}</h1>
-              <p className="text-teal-600 font-semibold">{doctor.specialization}</p>
-              <p className="text-sm text-foreground/60 mt-1">{doctor.qualification} • {doctor.experience_years} years experience</p>
-              <p className="text-sm text-gray-400 mt-1">📍 {doctor.clinic_address}</p>
-              {doctor.bio && <p className="text-sm text-foreground/70 mt-3 leading-relaxed">{doctor.bio}</p>}
+              <p className="text-accent font-semibold">{doctor.specialization}</p>
+              <p className="text-sm text-muted-foreground mt-1">{doctor.qualification} • {doctor.experience_years} years experience</p>
+              <p className="text-sm text-muted-foreground mt-1">📍 {doctor.clinic_address}</p>
+              {doctor.bio && <p className="text-sm text-foreground/80 mt-3 leading-relaxed">{doctor.bio}</p>}
               <div className="flex items-center gap-4 mt-4">
-                <div className="flex items-center gap-1 bg-amber-50 px-3 py-1.5 rounded-lg">
-                  <span className="text-amber-500">★</span>
-                  <span className="font-semibold text-amber-700">{doctor.rating_avg}</span>
-                  <span className="text-sm text-amber-500">({doctor.rating_count} reviews)</span>
+                <div className="flex items-center gap-1.5 bg-amber-100/90 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-700/80 px-3 py-1 rounded-lg">
+                  <span className="text-amber-600 dark:text-amber-400 text-sm">★</span>
+                  <span className="font-bold text-amber-950 dark:text-amber-200 text-sm">{doctor.rating_avg}</span>
+                  <span className="text-xs text-amber-900/90 dark:text-amber-300/90 font-medium">({doctor.rating_count} reviews)</span>
                 </div>
                 <div className="text-xl font-bold text-foreground">₹{doctor.consultation_fee}</div>
               </div>
@@ -162,7 +161,7 @@ export default function DoctorDetailPage() {
               <h3 className="font-semibold text-foreground/80 mb-3">Schedule</h3>
               <div className="flex flex-wrap gap-2">
                 {doctor.availabilities.filter(a => a.is_active).map((a) => (
-                  <span key={a.id} className="text-xs bg-teal-50 text-teal-700 px-3 py-1.5 rounded-lg">
+                  <span key={a.id} className="text-xs bg-teal-100/90 dark:bg-teal-950/50 text-teal-950 dark:text-teal-200 border border-teal-300/80 dark:border-teal-700/80 px-3 py-1.5 rounded-lg font-semibold">
                     {DAY_NAMES[a.day_of_week]} {a.start_time}–{a.end_time}
                   </span>
                 ))}
@@ -177,13 +176,19 @@ export default function DoctorDetailPage() {
             <div className="bg-surface rounded-2xl shadow-sm border border-border p-6">
               <h2 className="text-xl font-bold text-foreground mb-6">Book Appointment</h2>
 
+              {errorMsg && (
+                <div className="mb-4 p-3 bg-rose-50 dark:bg-rose-950/50 border border-rose-300 dark:border-rose-800 text-rose-900 dark:text-rose-200 text-sm rounded-xl">
+                  {errorMsg}
+                </div>
+              )}
+
               {bookingStatus === "success" ? (
                 <div className="text-center py-8">
                   <div className="text-5xl mb-4">🎉</div>
-                  <h3 className="text-xl font-bold text-green-700 mb-2">Appointment Requested Successfully!</h3>
-                  <p className="text-foreground/60 mb-6">Your request has been sent to the doctor. Once accepted, you can complete the payment.</p>
+                  <h3 className="text-xl font-bold text-emerald-700 dark:text-emerald-300 mb-2">Appointment Requested Successfully!</h3>
+                  <p className="text-muted-foreground mb-6">Your request has been sent to the doctor. Once accepted, you can complete the payment.</p>
                   <button onClick={() => router.push("/patient/dashboard")}
-                    className="px-6 py-3 bg-teal-600 text-white font-semibold rounded-xl hover:bg-teal-700 transition-colors">
+                    className="px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-colors shadow-sm">
                     View My Appointments
                   </button>
                 </div>
@@ -193,13 +198,16 @@ export default function DoctorDetailPage() {
                   <div className="mb-6">
                     <label className="block text-sm font-medium text-foreground/80 mb-3">Select Date</label>
                     <div className="flex overflow-x-auto gap-2 pb-2">
-                      {dateOptions.map((d) => (
-                        <button key={d.value} onClick={() => setSelectedDate(d.value)}
-                          className={`shrink-0 px-4 py-3 rounded-xl text-sm font-medium transition-all ${selectedDate === d.value ? "bg-teal-600 text-white shadow" : "bg-surface hover:brightness-95 dark:hover:brightness-110 text-foreground/70 border border-border hover:border-teal-300"}`}>
-                          <div className="text-xs opacity-70">{d.dayName.slice(0, 3)}</div>
-                          <div>{d.label.split(", ")[0]?.split(" ").pop()}</div>
-                        </button>
-                      ))}
+                      {dateOptions.map((d) => {
+                        const isSelected = selectedDate === d.value;
+                        return (
+                          <button key={d.value} onClick={() => setSelectedDate(d.value)}
+                            className={`shrink-0 px-4 py-3 rounded-xl text-sm font-medium transition-all ${isSelected ? "bg-primary text-primary-foreground shadow-md ring-2 ring-primary ring-offset-2 ring-offset-background" : "bg-surface hover:bg-surface-subtle border border-border hover:border-accent/40"}`}>
+                            <div className={`text-xs font-semibold uppercase ${isSelected ? "text-primary-foreground/90" : "text-muted-foreground"}`}>{d.dayName.slice(0, 3)}</div>
+                            <div className={`text-sm font-bold mt-0.5 ${isSelected ? "text-primary-foreground" : "text-foreground"}`}>{d.label.split(", ")[0]?.split(" ").pop()}</div>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
@@ -211,7 +219,7 @@ export default function DoctorDetailPage() {
                         {[1,2,3,4,5,6,7,8].map(i => <div key={i} className="skeleton h-10 rounded-lg" />)}
                       </div>
                     ) : slots.length === 0 ? (
-                      <div className="text-center py-8 bg-surface hover:brightness-95 dark:hover:brightness-110 rounded-xl text-gray-400">
+                      <div className="text-center py-8 bg-surface-subtle border border-border rounded-xl text-muted-foreground">
                         <p>No slots available for this date</p>
                       </div>
                     ) : (
@@ -219,7 +227,13 @@ export default function DoctorDetailPage() {
                         {slots.map((s) => (
                           <button key={s.start_time} disabled={!s.is_available}
                             onClick={() => setSelectedSlot(s.start_time)}
-                            className={`py-2.5 px-2 rounded-lg text-sm font-medium transition-all ${!s.is_available ? "bg-surface brightness-95 dark:brightness-125 text-gray-300 cursor-not-allowed line-through" : selectedSlot === s.start_time ? "bg-teal-600 text-white shadow" : "bg-surface border border-border text-foreground/80 hover:border-teal-400"}`}>
+                            className={`py-2.5 px-2 rounded-lg text-sm transition-all ${
+                              !s.is_available
+                                ? "bg-surface-subtle text-muted-foreground/40 border border-border/60 cursor-not-allowed line-through font-normal"
+                                : selectedSlot === s.start_time
+                                ? "bg-primary text-primary-foreground shadow-md font-bold border border-primary ring-2 ring-primary ring-offset-1 ring-offset-background"
+                                : "bg-teal-100/80 hover:bg-teal-200/90 dark:bg-surface dark:hover:bg-surface-subtle border border-teal-300/90 dark:border-border text-teal-950 dark:text-foreground font-semibold"
+                            }`}>
                             {s.start_time}
                           </button>
                         ))}
@@ -232,11 +246,11 @@ export default function DoctorDetailPage() {
                     <label className="block text-sm font-medium text-foreground/80 mb-1.5">Reason for Visit</label>
                     <input type="text" value={reason} onChange={(e) => setReason(e.target.value)}
                       placeholder="Describe your symptoms or consultation purpose"
-                      className="w-full px-4 py-3 rounded-xl border border-border text-foreground/90 focus:ring-2 focus:ring-teal-500 outline-none" />
+                      className="w-full px-4 py-3 rounded-xl border border-border bg-surface text-foreground focus:ring-2 focus:ring-accent outline-none" />
                   </div>
 
                   <button onClick={handleBook} disabled={!selectedSlot || !selectedDate || bookingStatus === "booking"}
-                    className="w-full py-3.5 bg-primary text-primary-foreground font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                    className="w-full py-3.5 bg-primary text-primary-foreground font-semibold rounded-xl shadow-md hover:bg-primary/90 transition-all disabled:bg-surface-subtle disabled:text-muted-foreground/60 disabled:border disabled:border-border disabled:shadow-none disabled:cursor-not-allowed">
                     {bookingStatus === "booking" ? "Requesting..." : `Request Appointment`}
                   </button>
                 </>
@@ -249,16 +263,16 @@ export default function DoctorDetailPage() {
             <div className="bg-surface rounded-2xl shadow-sm border border-border p-6">
               <h3 className="font-bold text-foreground mb-4">Patient Reviews ({reviews.length})</h3>
               {reviews.length === 0 ? (
-                <p className="text-sm text-gray-400">No reviews yet</p>
+                <p className="text-sm text-muted-foreground">No reviews yet</p>
               ) : (
                 <div className="space-y-4">
                   {reviews.slice(0, 5).map((r) => (
-                    <div key={r.id} className="pb-4 border-b border-gray-50 last:border-0">
+                    <div key={r.id} className="pb-4 border-b border-border last:border-0">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-amber-500 text-sm">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span>
                       </div>
-                      <p className="text-sm text-foreground/70">{r.comment || "Great experience!"}</p>
-                      <p className="text-xs text-gray-400 mt-1">— {r.patient_name}</p>
+                      <p className="text-sm text-foreground leading-relaxed">{r.comment || "Great experience!"}</p>
+                      <p className="text-xs text-muted-foreground mt-1">— {r.patient_name}</p>
                     </div>
                   ))}
                 </div>
