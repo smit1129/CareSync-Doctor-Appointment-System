@@ -40,13 +40,7 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    Promise.all([
-      doctorsAPI.list(),
-      doctorsAPI.getSpecializations(),
-    ]).then(([docs, specs]) => {
-      setDoctors(docs);
-      setSpecializations(specs);
-    }).finally(() => setLoading(false));
+    doctorsAPI.getSpecializations().then(setSpecializations).catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -56,8 +50,11 @@ export default function HomePage() {
       try {
         const docs = await doctorsAPI.list({ specialization: selectedSpec || undefined, search: search || undefined });
         if (active) setDoctors(docs);
-      } catch { /* empty */ }
-      if (active) setLoading(false);
+      } catch (err) {
+        console.error("Failed to load doctors:", err);
+      } finally {
+        if (active) setLoading(false);
+      }
     };
     fetchDocs();
     return () => { active = false; };

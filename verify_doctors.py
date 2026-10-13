@@ -9,7 +9,7 @@ client = TestClient(app)
 docs = client.get('/api/doctors').json()
 print(f"=== DOCTORS ({len(docs)}) ===")
 for d in docs:
-    name = d["user"]["full_name"]
+    name = d.get("name") or (d.get("user") or {}).get("full_name", "Unknown")
     spec = d["specialization"]
     qual = d["qualification"]
     print(f"  {d['id']} | {name} | {spec} | {qual}")

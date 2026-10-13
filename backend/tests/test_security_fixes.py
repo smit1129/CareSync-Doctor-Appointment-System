@@ -19,7 +19,7 @@ client = TestClient(app)
 @pytest.fixture(scope="module", autouse=True)
 def setup_test_db():
     Base.metadata.drop_all(bind=engine)
-    init_db()
+    init_db(apply_security=True)
     db = SessionLocal()
     seed_database(db)
     db.close()

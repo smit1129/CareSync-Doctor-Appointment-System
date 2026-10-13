@@ -154,3 +154,75 @@ CREATE TABLE IF NOT EXISTS password_resets (
 );
 
 CREATE INDEX IF NOT EXISTS idx_password_resets_token ON password_resets(token);
+
+-- ============================================================================
+-- 10. ROW LEVEL SECURITY (RLS) & ACCESS CONTROL (SUPABASE SECURITY ADVISOR)
+-- ============================================================================
+
+-- Enable Row Level Security on all tables in public schema
+ALTER TABLE IF EXISTS users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS doctors ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS patients ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS doctor_availabilities ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS appointments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS payments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS feedback_ratings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS password_resets ENABLE ROW LEVEL SECURITY;
+
+-- Revoke default PostgREST access from anon and authenticated roles
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') THEN
+        REVOKE ALL ON TABLE users FROM anon, authenticated;
+        REVOKE ALL ON TABLE doctors FROM anon, authenticated;
+        REVOKE ALL ON TABLE patients FROM anon, authenticated;
+        REVOKE ALL ON TABLE doctor_availabilities FROM anon, authenticated;
+        REVOKE ALL ON TABLE appointments FROM anon, authenticated;
+        REVOKE ALL ON TABLE payments FROM anon, authenticated;
+        REVOKE ALL ON TABLE notifications FROM anon, authenticated;
+        REVOKE ALL ON TABLE feedback_ratings FROM anon, authenticated;
+        REVOKE ALL ON TABLE password_resets FROM anon, authenticated;
+        
+        -- Prevent future default grants to anon/authenticated
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON TABLES FROM anon, authenticated;
+    END IF;
+END $$;
+
+-- Drop any residual anon read policies (PostgREST needs zero access)
+DROP POLICY IF EXISTS "allow_anon_read_doctors" ON doctors;
+DROP POLICY IF EXISTS "allow_anon_read_availabilities" ON doctor_availabilities;
+
+-- Service role policies for backend maintenance
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN
+        DROP POLICY IF EXISTS "service_role_all_users" ON users;
+        CREATE POLICY "service_role_all_users" ON users FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+        DROP POLICY IF EXISTS "service_role_all_doctors" ON doctors;
+        CREATE POLICY "service_role_all_doctors" ON doctors FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+        DROP POLICY IF EXISTS "service_role_all_patients" ON patients;
+        CREATE POLICY "service_role_all_patients" ON patients FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+        DROP POLICY IF EXISTS "service_role_all_availabilities" ON doctor_availabilities;
+        CREATE POLICY "service_role_all_availabilities" ON doctor_availabilities FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+        DROP POLICY IF EXISTS "service_role_all_appointments" ON appointments;
+        CREATE POLICY "service_role_all_appointments" ON appointments FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+        DROP POLICY IF EXISTS "service_role_all_payments" ON payments;
+        CREATE POLICY "service_role_all_payments" ON payments FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+        DROP POLICY IF EXISTS "service_role_all_notifications" ON notifications;
+        CREATE POLICY "service_role_all_notifications" ON notifications FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+        DROP POLICY IF EXISTS "service_role_all_feedback" ON feedback_ratings;
+        CREATE POLICY "service_role_all_feedback" ON feedback_ratings FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+        DROP POLICY IF EXISTS "service_role_all_password_resets" ON password_resets;
+        CREATE POLICY "service_role_all_password_resets" ON password_resets FOR ALL TO service_role USING (true) WITH CHECK (true);
+    END IF;
+END $$;
+

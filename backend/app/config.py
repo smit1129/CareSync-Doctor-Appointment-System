@@ -21,9 +21,15 @@ class Settings(BaseSettings):
 
     @property
     def parsed_cors_origins(self) -> List[str]:
-        origins = [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
-        if self.FRONTEND_URL and self.FRONTEND_URL not in origins:
-            origins.append(self.FRONTEND_URL.strip())
+        candidates = [
+            *self.CORS_ORIGINS.split(","),
+            *([self.FRONTEND_URL] if self.FRONTEND_URL else []),
+        ]
+        origins: List[str] = []
+        for origin in candidates:
+            clean = origin.strip().rstrip("/")
+            if clean and clean not in origins:
+                origins.append(clean)
         return origins
 
     model_config = {

@@ -25,8 +25,11 @@ export default function DoctorsPage() {
           search: search || undefined,
         });
         if (active) setDoctors(docs);
-      } catch { /* empty */ }
-      if (active) setLoading(false);
+      } catch (err) {
+        console.error("Failed to load doctors:", err);
+      } finally {
+        if (active) setLoading(false);
+      }
     };
     fetchDocs();
     return () => { active = false; };
